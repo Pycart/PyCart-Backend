@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from main.views import ItemList
+from main.main_views.item_list import ItemList
 
 urlpatterns = [
     url(r'^$','main.views.api_root', name="api-root"),
