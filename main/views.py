@@ -28,5 +28,5 @@ class ItemList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
 @api_view(('GET',))
 def api_root(request, format=None):
     return Response({
-        'items': reverse('shop_items', request=request, format=format),
+        'items': reverse('items_list', request=request, format=format),
     })

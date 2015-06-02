@@ -19,8 +19,9 @@ class OptionInline(admin.TabularInline):
 
 class ItemAdmin(admin.ModelAdmin):
     pass
-    # list_display = ("name_of_item", "description")
 
+
+# list_display = ("name_of_item", "description")
 # class MyItemAdmin(ItemAdmin):
 #     def queryset(self, request):
 #         return self.model.objects.filter(user = request.user)
@@ -37,7 +38,6 @@ class Shop_Item_TagAdmin(MPTTModelAdmin):
 admin.site.register(ShopUser)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(Order)
-admin.site.register(Tag)
 admin.site.register(Shop_Item_Tag, Shop_Item_TagAdmin)
 admin.site.register(Shop_Tagged_Item)
 admin.site.register(Option)
