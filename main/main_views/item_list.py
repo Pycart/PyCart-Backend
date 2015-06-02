@@ -9,10 +9,16 @@ class ItemList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
     serializer_class = ItemSerializer
 
     def get(self, request, *args, **kwargs):
+
+        kwargs['id'] = 1
+
+        print request
+
+        print args
+
+        print kwargs
+
         return self.list(request, *args, **kwargs)
 
-    def post(self, request, *args, **kwargs):
-
-        print request.DATA
-
-        return self.create(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     return self.create(request, *args, **kwargs)
