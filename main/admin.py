@@ -23,6 +23,7 @@ class ItemAdmin(admin.ModelAdmin):
 #
 # create_modeladmin(MyRecipeAdmin2, model=Recipe, name='my_recipe')
 
+admin.site.register(ShopUser)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(Order)
 admin.site.register(Tag)
