@@ -9,6 +9,7 @@ class Item(models.Model):
     weight = models.DecimalField(max_digits=6, decimal_places=2)
     tags = TaggableManager(through=Shop_Tagged_Item)
     option = models.ForeignKey("Option")
+    price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __unicode__(self):
         return self.name

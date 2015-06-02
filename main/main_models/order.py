@@ -1,8 +1,9 @@
+from decimal import Decimal
+from datetime import date, datetime
 from django.db import models
 from django.utils import timezone
 from user import ShopUser
 from item import Item
-import uuid
 
 class Status(models.Model):
     status = models.CharField(max_length=255)
@@ -16,16 +17,14 @@ class Status(models.Model):
         return self.status
 
 class Order(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4().int, editable=False, unique=True)
-
     _current_status = models.ForeignKey(Status)
-    _current_status_last_modified = models.DateTimeField(auto_now_add=True)
-    _weight = models.DecimalField(max_digits=10, decimal_places=2)
+    _last_modified = models.DateTimeField(auto_now=True)
+    _weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    _total_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     user = models.ForeignKey(ShopUser)
     items = models.ManyToManyField(Item)
     date_placed = models.DateTimeField(auto_now_add=True)
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
 
     # TODO: Add shipping carrier FK
     # shipping = models.ForeignKey()
@@ -34,10 +33,16 @@ class Order(models.Model):
         return unicode(self.id)
 
     def set_weight(self):
-        total = 0.0
+        total = Decimal()
         for item in self.items.all():
             total += item.weight
-        self.weight = total
+        self._weight = total
+
+    def set_total_price(self):
+        total = Decimal()
+        for item in self.items.all():
+            total += item.price
+        self._total_price = total
 
     @property
     def weight(self):
@@ -54,15 +59,22 @@ class Order(models.Model):
 
     @current_status.setter
     def current_status(self, status):
-        now = timezone.now()
+        now = datetime.now()
         self._current_status = status
         self._current_status_date_modified = now
 
     @property
-    def current_status_last_modified(self):
-        return self._current_status_last_modified
+    def last_modified(self):
+        return self._last_modified
 
-    @current_status_last_modified.setter
-    def current_status_last_modified(self, value):
-        raise AttributeError("You cannot set the date last modified directly. "
-                             "Updating the status will do this for you.")
+    @last_modified.setter
+    def last_modified(self, value):
+        raise AttributeError("You cannot set the date last modified directly.")
+
+    @property
+    def total_price(self):
+        return self._total_price
+
+    @total_price.setter
+    def total_price(self, value):
+        raise AttributeError("You cannot set the total price directly. It is calculated via all the items prices.")
