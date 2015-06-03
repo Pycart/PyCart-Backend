@@ -22,6 +22,6 @@ urlpatterns = [
     url(r'^$','main.views.api_root', name="api-root"),
     url(r'^items_list/$', ItemList.as_view(), name="items_list"),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^allOrdersList/', OrdersView.as_view()),
-    url(r'^recentOrdersList/', RecentOrdersView.as_view()),
+    url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
+    url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
 ]
