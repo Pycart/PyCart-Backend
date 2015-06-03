@@ -34,10 +34,15 @@ class Shop_Item_TagAdmin(MPTTModelAdmin):
     search_fields = ['name',]
     raw_id_fields = ['parent',]
 
+class OrderAdmin(admin.ModelAdmin):
+    readonly_fields = ('_weight', '_last_modified', 'date_placed', '_total_price')
+
+
 
 admin.site.register(ShopUser)
 admin.site.register(Item, ItemAdmin)
-admin.site.register(Order)
+admin.site.register(Order, OrderAdmin)
+admin.site.register(Status)
 admin.site.register(Shop_Item_Tag, Shop_Item_TagAdmin)
 admin.site.register(Shop_Tagged_Item)
 admin.site.register(Option)
