@@ -1,8 +1,9 @@
 from django.db import models
 from django.db.models import Count
 from taggit.managers import TaggableManager
-from main.main_models.order import Order
+from order import Order
 from tag import Shop_Tagged_Item
+from datetime import timedelta
 
 
 
@@ -25,7 +26,16 @@ class Item(models.Model):
     @staticmethod
     def get_best_selling():
         orders = Order.objects.all()
-        Item.objects.filter(order__in=orders).annotate(itemcount=Count('id')).order_by('-itemcount')
+        best_selling = Item.objects.filter(order__in=orders).annotate(itemcount=Count('id')).order_by('-itemcount')
+        return best_selling
+
+    @staticmethod
+    def get_best_selling_recent():
+        orders = Order.objects.all()
+        date_range = timedelta(days=30)
+        best_selling = Item.objects.filter(order__in=orders).annotate(itemcount=Count('id')).order_by('-itemcount')
+        best_selling_recent = best_selling.filter(order__date_placed__gte=date_range)
+        return best_selling_recent
 
     class Meta:
         verbose_name = 'Item'

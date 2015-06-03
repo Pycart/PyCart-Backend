@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
 from main_models.item import Item
-from main.main_models.order import Order, Status
+from main_models.order import Order, Status
 
 
 class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):

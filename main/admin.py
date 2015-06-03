@@ -3,7 +3,7 @@ from mptt.admin import MPTTModelAdmin
 from models import *
 
 def create_modeladmin(modeladmin, model, name = None):
-    class  Meta:
+    class Meta:
         proxy = True
         app_label = model._meta.app_label
 
