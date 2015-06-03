@@ -5,6 +5,9 @@ from rest_framework.reverse import reverse
 
 @api_view(('GET',))
 def api_root(request, format=None):
-    return Response({
-        'items': reverse('items_list', request=request, format=format),
-    })
+    response = {}
+    if request.user.is_authenticated():
+        response['all-orders'] = reverse('all_orders', request=request, format=format)
+        response['recent-orders'] = reverse('recent_orders', request=request, format=format)
+    response['items'] = reverse('items_list', request=request, format=format)
+    return Response(response)
