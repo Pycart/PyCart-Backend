@@ -16,6 +16,7 @@ class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
 
+
 class OrderSerializer(serializers.ModelSerializer):
     items = ItemSerializer(required=True, many=True)
     _current_status = StatusSerializer(required=True, many=False)

@@ -38,7 +38,6 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = ('_weight', '_last_modified', 'date_placed', '_total_price')
 
 
-
 admin.site.register(ShopUser)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(Order, OrderAdmin)
