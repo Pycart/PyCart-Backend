@@ -1,9 +1,10 @@
 from django.db import models
 from django.db.models import Count
 from taggit.managers import TaggableManager
-from order import Order
+from main.main_models import Order
 from tag import Shop_Tagged_Item
 from datetime import timedelta
+
 
 
 class Item(models.Model):
@@ -43,6 +44,7 @@ class Item(models.Model):
 
 class Option(models.Model):
     name = models.CharField(max_length=255)
+
 
     def __unicode__(self):
         return self.name
