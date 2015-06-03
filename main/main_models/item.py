@@ -1,6 +1,9 @@
 from django.db import models
+from django.db.models import Count
 from taggit.managers import TaggableManager
+from main.main_models.order import Order
 from tag import Shop_Tagged_Item
+
 
 
 class Item(models.Model):
@@ -13,6 +16,16 @@ class Item(models.Model):
 
     def __unicode__(self):
         return self.name
+
+    @property
+    def number_sold(self):
+        sold = Order.objects.filter(items=self).count()
+        return sold
+
+    @staticmethod
+    def get_best_selling():
+        orders = Order.objects.all()
+        Item.objects.filter(order__in=orders).annotate(itemcount=Count('id')).order_by('-itemcount')
 
     class Meta:
         verbose_name = 'Item'

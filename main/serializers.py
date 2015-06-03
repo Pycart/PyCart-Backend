@@ -10,7 +10,6 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Item
-        fields = ('tags',)
 
 
 class StatusSerializer(serializers.ModelSerializer):

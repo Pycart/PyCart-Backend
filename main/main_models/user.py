@@ -38,7 +38,7 @@ class ShopUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField('last name', max_length=30, blank=True, null=True)
     is_staff = models.BooleanField('staff status', default=False)
     is_active = models.BooleanField('active', default=True)
-    date_joined = models.DateTimeField('date joined', default=timezone.now())
+    date_joined = models.DateTimeField('date joined', auto_now_add=True)
     objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
