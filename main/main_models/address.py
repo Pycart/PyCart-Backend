@@ -18,12 +18,3 @@ class Address(models.Model):
 
     def __unicode__(self):
         return self.name
-
-
-
-# have an address typefield, then give it a foreign key going back to user.
-# add all of the standard address attributes
-# start filling in the user dashboard (will have all of the user information, except the user model)
-
-#  User CC address
-# User Shipping
