@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models import Count
 from taggit.managers import TaggableManager
-from main.main_models import Order
+from main.main_models.order import Order
 from tag import Shop_Tagged_Item
 from datetime import timedelta
 
