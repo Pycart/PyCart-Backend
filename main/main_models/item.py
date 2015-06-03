@@ -6,7 +6,6 @@ from tag import Shop_Tagged_Item
 from datetime import timedelta
 
 
-
 class Item(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField()
@@ -44,7 +43,6 @@ class Item(models.Model):
 
 class Option(models.Model):
     name = models.CharField(max_length=255)
-
 
     def __unicode__(self):
         return self.name
