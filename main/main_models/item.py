@@ -1,4 +1,3 @@
-import datetime
 from django.db import models
 from django.db.models import Count
 from django.utils import timezone
@@ -31,21 +30,10 @@ class Item(models.Model):
         best_selling = Item.objects.filter(order__in=orders).annotate(itemcount=Count('id')).order_by('-itemcount')
         return best_selling
 
-<<<<<<< HEAD
-
-    @staticmethod
-    def get_best_selling_recent():
-        date_range = datetime.timedelta(days=30)
-        orders = Order.objects.all()
-
-        best_selling = Item.objects.filter(order__in=orders).annotate(itemcount=Count('id')).order_by('-itemcount')
-        best_selling_recent = best_selling.filter(order__date_placed__gte=date_range)
-=======
     @staticmethod
     def get_best_selling_recently(days=30):
         date_range = timezone.now() - datetime.timedelta(days=days)
         best_selling_recent = Item.get_best_selling().filter(order__date_placed__gte=date_range)
->>>>>>> 7173eef3f8c90bce4378d64f20ae09966d0ce08f
         return best_selling_recent
 
     class Meta:
