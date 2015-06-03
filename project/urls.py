@@ -15,12 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from main.main_views.item_list import ItemList
+from main.main_views.item_list import ItemList, ItemSearch
 from main.main_views.order import OrdersView, RecentOrdersView
 
 urlpatterns = [
     url(r'^$','main.views.api_root', name="api-root"),
     url(r'^items_list/$', ItemList.as_view(), name="items_list"),
+    url(r'^items_search/$', ItemSearch.as_view(), name="items_search"),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
