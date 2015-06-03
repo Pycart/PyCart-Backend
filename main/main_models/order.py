@@ -3,8 +3,6 @@ import datetime
 from decimal import Decimal
 from django.db import models
 from django.utils import timezone
-from user import ShopUser
-from item import Item
 
 class Status(models.Model):
     status = models.CharField(max_length=255)
@@ -18,13 +16,13 @@ class Status(models.Model):
         return self.status
 
 class Order(models.Model):
-    _current_status = models.ForeignKey(Status)
+    _current_status = models.ForeignKey("main.Status")
     _last_modified = models.DateTimeField(auto_now=True)
     _weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     _total_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
-    user = models.ForeignKey(ShopUser)
-    items = models.ManyToManyField(Item)
+    user = models.ForeignKey("main.ShopUser")
+    items = models.ManyToManyField("main.Item")
     date_placed = models.DateTimeField(auto_now_add=True)
 
     # TODO: Add shipping carrier FK

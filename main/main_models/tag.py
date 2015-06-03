@@ -3,7 +3,7 @@ from taggit.models import TagBase, GenericTaggedItemBase
 from mptt.models import MPTTModel, TreeForeignKey
 
 class Shop_Tagged_Item(GenericTaggedItemBase):
-    tag = models.ForeignKey("Shop_Item_Tag")
+    tag = models.ForeignKey("Shop_Item_Tag", related_name="%(app_label)s_%(class)ss")
     date_modified = models.DateTimeField(auto_now = True, null=True)
     date_created = models.DateTimeField(auto_now_add = True, null=True)
     start_date = models.DateTimeField(blank=True, null=True, db_index=True)
