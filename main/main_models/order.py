@@ -1,5 +1,6 @@
+import datetime
+
 from decimal import Decimal
-from datetime import date, datetime
 from django.db import models
 from django.utils import timezone
 from user import ShopUser
@@ -44,6 +45,11 @@ class Order(models.Model):
             total += item.price
         self._total_price = total
 
+    def recently_placed(self):
+        # TODO: Make configurable amount of time order stays "recent", probably in settings.py or as a user attribute
+        now = timezone.now()
+        return now - datetime.timedelta(days=30) <= self.date_placed <= now
+
     @property
     def weight(self):
         return self._weight
@@ -59,7 +65,7 @@ class Order(models.Model):
 
     @current_status.setter
     def current_status(self, status):
-        now = datetime.now()
+        now = timezone.now()
         self._current_status = status
         self._current_status_date_modified = now
 
