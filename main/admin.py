@@ -3,8 +3,8 @@ from mptt.admin import MPTTModelAdmin
 
 from models import *
 
-def create_modeladmin(modeladmin, model, name = None):
-    class  Meta:
+def create_modeladmin(modeladmin, model, name=None):
+    class Meta:
         proxy = True
         app_label = model._meta.app_label
 
@@ -40,7 +40,6 @@ class Shop_Item_TagAdmin(MPTTModelAdmin):
 
 class OrderAdmin(admin.ModelAdmin):
     readonly_fields = ('_weight', '_last_modified', 'date_placed', '_total_price')
-
 
 
 admin.site.register(ShopUser)
