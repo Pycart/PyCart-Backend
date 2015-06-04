@@ -20,6 +20,14 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Item
 
+class ItemDetailSerializer(serializers.ModelSerializer):
+
+    tags = TagListSerializerField()
+
+    class Meta:
+        model = Item
+        exclude = ('tags',)
+
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
