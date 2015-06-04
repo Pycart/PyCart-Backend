@@ -1,11 +1,12 @@
+import datetime
+
 from django.db import models
 from django.db.models import Count
 from django.utils import timezone
 from taggit.managers import TaggableManager
+
 from main.main_models.order import Order
 from tag import Shop_Tagged_Item
-import datetime
-
 
 
 class Item(models.Model):

@@ -1,4 +1,3 @@
-from django.db import models
 from main_models.item import *
 from main_models.order import *
 from main_models.tag import *

@@ -1,8 +1,9 @@
-from django.db.models import Q
 import operator
 
+from django.db.models import Q
 from rest_framework import generics
 from rest_framework import mixins
+
 from main.models import Item
 from main.paginators import CustomPageNumberPagination
 from main.serializers import ItemSerializer
@@ -19,8 +20,8 @@ class ItemList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericA
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-class ItemSearch(generics.ListAPIView):
 
+class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
 
     def get_queryset(self):
