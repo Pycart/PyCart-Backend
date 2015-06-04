@@ -21,6 +21,15 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
         model = Item
 
 
+class ItemDetailSerializer(serializers.ModelSerializer):
+
+    tags = TagListSerializerField()
+
+    class Meta:
+        model = Item
+        exclude = ('tags',)
+
+
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Status
