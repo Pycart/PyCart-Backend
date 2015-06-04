@@ -1,9 +1,10 @@
 from django.contrib import admin
 from mptt.admin import MPTTModelAdmin
+
 from models import *
 
 def create_modeladmin(modeladmin, model, name = None):
-    class Meta:
+    class  Meta:
         proxy = True
         app_label = model._meta.app_label
 
@@ -14,8 +15,10 @@ def create_modeladmin(modeladmin, model, name = None):
     admin.site.register(newmodel, modeladmin)
     return modeladmin
 
+
 class OptionInline(admin.TabularInline):
     model = Option
+
 
 class ItemAdmin(admin.ModelAdmin):
     pass
@@ -30,12 +33,14 @@ class ItemAdmin(admin.ModelAdmin):
 
 
 class Shop_Item_TagAdmin(MPTTModelAdmin):
-    list_display = ("name","slug")
-    search_fields = ['name',]
-    raw_id_fields = ['parent',]
+    list_display = ("name", "slug")
+    search_fields = ['name', ]
+    raw_id_fields = ['parent', ]
+
 
 class OrderAdmin(admin.ModelAdmin):
     readonly_fields = ('_weight', '_last_modified', 'date_placed', '_total_price')
+
 
 
 admin.site.register(ShopUser)

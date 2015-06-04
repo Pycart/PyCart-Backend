@@ -4,9 +4,7 @@ from django.utils.http import urlquote
 from django.core.mail import send_mail
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
-
-
-#This is basically creating a custom UserManager
+# This is basically creating a custom UserManager
 class CustomUserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
         now = timezone.now()

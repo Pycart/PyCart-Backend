@@ -1,5 +1,4 @@
 from django.db import models
-from user import ShopUser
 
 
 class Address(models.Model):

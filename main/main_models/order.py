@@ -1,7 +1,9 @@
 import datetime
 from decimal import Decimal
+
 from django.db import models
 from django.utils import timezone
+
 
 class Status(models.Model):
     status = models.CharField(max_length=255)
@@ -13,6 +15,7 @@ class Status(models.Model):
 
     def __unicode__(self):
         return self.status
+
 
 class Order(models.Model):
     _current_status = models.ForeignKey("main.Status")

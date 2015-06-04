@@ -16,14 +16,15 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from main.main_views.item_list import ItemList
-from main.main_views.item_detail import ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView
 
 urlpatterns = [
     url(r'^$','main.views.api_root', name="api-root"),
+    url(r'^login/$', Login.as_view(), name="login"),
+    url(r'^logout/$', Logout.as_view(), name="logout"),
+
     url(r'^items_list/$', ItemList.as_view(), name="items_list"),
-    url(r'^items_detail/(?P<pk>[0-9]+)/$', ItemDetail.as_view(), name='item-detail'),
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^allOrdersList/', OrdersView.as_view()),
-    url(r'^recentOrdersList/', RecentOrdersView.as_view()),
+    url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
+    url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
 ]
