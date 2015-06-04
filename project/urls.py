@@ -21,6 +21,9 @@ from main.main_views.order import OrdersView, RecentOrdersView
 
 urlpatterns = [
     url(r'^$','main.views.api_root', name="api-root"),
+    url(r'^login/$', Login.as_view(), name="login"),
+    url(r'^logout/$', Logout.as_view(), name="logout"),
+
     url(r'^items_list/$', ItemList.as_view(), name="items_list"),
     url(r'^items_search/$', ItemSearch.as_view(), name="items_search"),
     url(r'^admin/', include(admin.site.urls)),
