@@ -6,7 +6,7 @@ class ShopRegistrationView(djoser.views.RegistrationView):
 class ShopLoginView(djoser.views.LoginView):
     pass
 
-class LogoutView(views.APIView):
+class ShopLogoutView(views.APIView):
     """
     use this to logout user (remover user authentication token)
     """
@@ -19,7 +19,7 @@ class LogoutView(views.APIView):
 
         return response.Response(status=status.HTTP_200_OK)
 
-class PasswordResetView(utils.ActionViewMixin, utils.SendEmailMixin, generics.GenericAPIView):
+class ShopPasswordResetView(utils.ActionViewMixin, utils.SendEmailMixin, generics.GenericAPIView):
     """
     Use this endpoint to send email to user with password reset link.
     """
@@ -52,7 +52,7 @@ class PasswordResetView(utils.ActionViewMixin, utils.SendEmailMixin, generics.Ge
         context['url'] = settings.get('PASSWORD_RESET_CONFIRM_URL').format(**context)
         return context
 
-class SetPasswordView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopSetPasswordView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to change user password.
     """
@@ -70,7 +70,7 @@ class SetPasswordView(utils.ActionViewMixin, generics.GenericAPIView):
         self.request.user.save()
         return respone.Response(status=status.HTTP_200_OK)
 
-class PasswordResetConfirmView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopPasswordResetConfirmView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to finish reset password process.
     """
@@ -90,7 +90,7 @@ class PasswordResetConfirmView(utils.ActionViewMixin, generics.GenericAPIView):
         return response.Response(status=status.HTTP_200_OK)
 
 
-class ActivationView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopActivationView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to activate user account.
     """
@@ -113,7 +113,7 @@ class ActivationView(utils.ActionViewMixin, generics.GenericAPIView):
         return Response(data=data, status=status.HTTP_200_OK)
 
 
-class SetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopSetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to change user username.
     """
@@ -133,7 +133,7 @@ class SetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
         return response.Response(status=status.HTTP_200_OK)
 
 
-class UserView(generics.RetrieveUpdateAPIView):
+class ShopUserView(generics.RetrieveUpdateAPIView):
     """
     Use this endpoint to retrieve/update user.
     """
