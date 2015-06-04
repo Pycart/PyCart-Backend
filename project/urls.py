@@ -18,6 +18,7 @@ from django.contrib import admin
 from main.main_views.item_list import ItemList, ItemSearch
 from main.main_views.item_detail import ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView
+from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -28,6 +29,11 @@ urlpatterns = [
     url(r'^items_list/$', ItemList.as_view(), name="items_list"),
     url(r'^items_search/$', ItemSearch.as_view(), name="items_search"),
     url(r'^items_detail/(?P<pk>[0-9]+)/$', ItemDetail.as_view(), name='item-detail'),
+
+    url(r'^tags_list/$', TagList.as_view(), name="tags_list"),
+    url(r'^header_tags/$', HeaderTagList.as_view(), name="header_tags"),
+    url(r'^subheader_tags/$', SubheaderTagList.as_view(), name="subheader_tags"),
+
 
     url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
