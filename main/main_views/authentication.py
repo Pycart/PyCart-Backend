@@ -113,7 +113,7 @@ class ShopActivationView(utils.ActionViewMixin, generics.GenericAPIView):
         return Response(data=data, status=status.HTTP_200_OK)
 
 
-class SetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopSetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to change user username.
     """
@@ -133,7 +133,7 @@ class SetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
         return response.Response(status=status.HTTP_200_OK)
 
 
-class UserView(generics.RetrieveUpdateAPIView):
+class ShopUserView(generics.RetrieveUpdateAPIView):
     """
     Use this endpoint to retrieve/update user.
     """

@@ -19,7 +19,7 @@ from main.main_views.item_list import ItemList, ItemSearch
 from main.main_views.item_detail import ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView
 from main.main_views.authentication import ShopLoginView, ShopLogoutView, ShopPasswordResetView, ShopSetPasswordView, \
-    ShopPasswordResetConfirmView, ShopActivationView, SetUsernameView, UserView
+    ShopPasswordResetConfirmView, ShopActivationView, ShopSetUsernameView, ShopUserView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -41,8 +41,8 @@ urlpatterns = [
     url(r'^set_password/$', views.ShopSetPasswordView.as_view()),
     url(r'^password_reset_confirm/$', views.ShopPasswordResetConfirmView.as_view()),
     url(r'^activation_view/$', views.ShopActivationView.as_view()),
-    url(r'^set_username/$', views.SetUsernameView.as_view()),
-    url(r'^user_view/$', views.UserView.as_view()),
+    url(r'^set_username/$', views.ShopSetUsernameView.as_view()),
+    url(r'^user_view/$', views.ShopUserView.as_view()),
 
 
 
