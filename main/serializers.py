@@ -20,6 +20,7 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Item
 
+
 class ItemDetailSerializer(serializers.ModelSerializer):
 
     tags = TagListSerializerField()
