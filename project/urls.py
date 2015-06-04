@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 from main.main_views.item_list import ItemList, ItemSearch
+from main.main_views.login import Login, Logout
 from main.main_views.order import OrdersView, RecentOrdersView
 
 urlpatterns = [
