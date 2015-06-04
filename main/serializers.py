@@ -1,10 +1,8 @@
 from rest_framework import serializers
 from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
-<<<<<<< HEAD
 
-=======
 from main.main_models.user import ShopUser
->>>>>>> b6c9bf6c499494c1ee460ad65b9a36cac422b8d1
+
 from main_models.item import Item
 from main.main_models.order import Order, Status
 
