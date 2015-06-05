@@ -35,12 +35,12 @@ urlpatterns = [
     url(r'^header_tags/$', HeaderTagList.as_view(), name="header_tags"),
     url(r'^subheader_tags/$', SubheaderTagList.as_view(), name="subheader_tags"),
 
-    url(r'^admin_create_item/$', AdminCreateItem.as_view(), name="admin_create_item"),
-    url(r'^admin_list_item/$', AdminItemList.as_view(), name="admin_list_item"),
-    url(r'^admin_item_detail/$', AdminItemDetail.as_view(), name="admin_item_detail"),
-    url(r'^admin_create_option/$', AdminCreateOption.as_view(), name="admin_create_option"),
-    url(r'^admin_list_option/$', AdminOptionList.as_view(), name="admin_list_option"),
-    url(r'^admin_item_option/$', AdminOptionDetail.as_view(), name="admin_item_option"),
+    url(r'^admin_dashboard/items/$', AdminListCreateItem.as_view(), name="create_item"),
+    url(r'^admin_dashboard/items/(?P<pk>[0-9]+)/$', AdminItemDetail.as_view(), name="item_detail_update"),
+    url(r'^admin_dashboard/options/$', AdminListCreateOption.as_view(), name="create_option"),
+    url(r'^admin_dashboard/options/(?P<pk>[0-9]+)/$', AdminOptionDetail.as_view(), name="option_detail_update"),
+    url(r'^admin_dashboard/status/$', AdminListCreateStatus.as_view(), name="create_status"),
+    url(r'^admin_dashboard/status/(?P<pk>[0-9]+)/$', AdminStatusDetail.as_view(), name="status_detail_update"),
 
     url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),

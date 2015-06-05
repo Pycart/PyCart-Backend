@@ -14,8 +14,13 @@ class ShopUserSerializer(serializers.ModelSerializer):
         read_only_fields = ('email', )
 
 
+class OptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+
 class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
+    option = OptionSerializer()
 
     class Meta:
         model = Item
@@ -51,33 +56,5 @@ class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
         model = Shop_Item_Tag
 
 
-class AdminCreateItemSerializer(TaggitSerializer, serializers.ModelSerializer):
-    tags = TagListSerializerField()
-
-    class Meta:
-        model = Item
 
 
-class AdminItemListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Item
-
-
-class AdminItemDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Item
-
-
-class AdminCreateOptionSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Option
-
-
-class AdminOptionListSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Option
-
-
-class AdminOptionDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Option
