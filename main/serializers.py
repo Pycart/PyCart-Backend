@@ -2,7 +2,7 @@ from rest_framework import serializers
 from taggit_serializer.serializers import TagListSerializerField, TaggitSerializer
 
 from main.main_models.user import ShopUser
-from main_models.item import Item
+from main_models.item import Item, Option
 from main_models.tag import Shop_Item_Tag
 from main_models.order import Order, Status
 
@@ -49,3 +49,35 @@ class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Shop_Item_Tag
+
+
+class AdminCreateItemSerializer(TaggitSerializer, serializers.ModelSerializer):
+    tags = TagListSerializerField()
+
+    class Meta:
+        model = Item
+
+
+class AdminItemListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+
+
+class AdminItemDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Item
+
+
+class AdminCreateOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+
+
+class AdminOptionListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option
+
+
+class AdminOptionDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Option

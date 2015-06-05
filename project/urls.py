@@ -19,6 +19,7 @@ from main.main_views.item_list import ItemList, ItemSearch
 from main.main_views.item_detail import ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
+from main.main_views.admin_dashboard import *
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -34,6 +35,12 @@ urlpatterns = [
     url(r'^header_tags/$', HeaderTagList.as_view(), name="header_tags"),
     url(r'^subheader_tags/$', SubheaderTagList.as_view(), name="subheader_tags"),
 
+    url(r'^admin_create_item/$', AdminCreateItem.as_view(), name="admin_create_item"),
+    url(r'^admin_list_item/$', AdminItemList.as_view(), name="admin_list_item"),
+    url(r'^admin_item_detail/$', AdminItemDetail.as_view(), name="admin_item_detail"),
+    url(r'^admin_create_option/$', AdminCreateOption.as_view(), name="admin_create_option"),
+    url(r'^admin_list_option/$', AdminOptionList.as_view(), name="admin_list_option"),
+    url(r'^admin_item_option/$', AdminOptionDetail.as_view(), name="admin_item_option"),
 
     url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
