@@ -22,7 +22,7 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
 
 
 class ItemDetailSerializer(serializers.ModelSerializer):
-
+    option = serializers.ReadOnlyField(source="option.name")
     tags = TagListSerializerField()
 
     class Meta:
