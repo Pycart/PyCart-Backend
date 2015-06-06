@@ -8,6 +8,12 @@ from main.main_models.item import Item
 
 from main.main_models.order import Status, Order
 
+class StatusTestCase(TestCase):
+    def setUp(self):
+        self.status = mommy.make('main.Status')
+
+    def test_to_unicode(self):
+        self.assertEqual(str(self.status), self.status.status)
 
 class OrderTestCase(TestCase):
     def setUp(self):
@@ -72,6 +78,13 @@ class OrderTestCase(TestCase):
         self.assertNotEqual(self.single_order.last_modified, old_last_modified)
         self.assertEqual(self.single_order.current_status, status)
 
+class OptionTestCase(TestCase):
+    def setUp(self):
+        self.option = mommy.make('main.Option')
+
+    def test_to_unicode(self):
+        self.assertEqual(str(self.option), self.option.name)
+
 class ItemTestCase(TestCase):
     def setUp(self):
         self.items = mommy.make('main.Item', make_m2m=True, _quantity=25)
@@ -105,3 +118,4 @@ class ItemTestCase(TestCase):
     def test_best_selling_recently(self):
         self.assertListEqual(list(Item.get_best_selling_recently()), [self.single_item_sold_multiple_times,
                                                                       self.single_item_sold])
+
