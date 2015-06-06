@@ -20,9 +20,11 @@ from main.main_views.item_detail import ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
+from main.main_views.user_account import UserView
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'auth/me/', UserView.as_view(), name='user_details'),
     url(r'auth/', include('djoser.urls')),
 
     url(r'^$','main.views.api_root', name="api-root"),
