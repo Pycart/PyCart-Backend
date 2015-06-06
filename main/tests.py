@@ -4,6 +4,7 @@ import datetime
 from django.test import TestCase
 from django.utils import timezone
 from model_mommy import mommy
+from main.main_models.item import Item
 
 from main.main_models.order import Status, Order
 
@@ -68,6 +69,39 @@ class OrderTestCase(TestCase):
         old_last_modified = self.single_order.last_modified
         status = Status.objects.get(pk=1)
         self.single_order.current_status = status
-
         self.assertNotEqual(self.single_order.last_modified, old_last_modified)
         self.assertEqual(self.single_order.current_status, status)
+
+class ItemTestCase(TestCase):
+    def setUp(self):
+        self.items = mommy.make('main.Item', make_m2m=True, _quantity=25)
+        self.single_item_no_sales = mommy.make('main.Item', make_m2m=True)
+        self.single_item_sold = mommy.make('main.Item', make_m2m=True)
+        self.single_item_sold_multiple_times = mommy.make('main.Item', make_m2m=True)
+        self.single_item_sold_old_orders = mommy.make('main.item', make_m2m=True)
+        self.order_with_sold_item = mommy.make('main.Order', items=[self.single_item_sold], make_m2m=True)
+        self.orders_with_single_item = mommy.make('main.Order', items=[self.single_item_sold_multiple_times], make_m2m=True, _quantity=25)
+
+        old_date = timezone.now() - datetime.timedelta(days=60)
+        self.old_orders = mommy.make('main.Order', items=[self.single_item_sold_old_orders], make_m2m=True, _quantity=25)
+        for order in self.old_orders:
+            order.date_placed = old_date
+            order.save()
+
+    def test_to_unicode(self):
+        self.assertEqual(self.single_item_sold.name, str(self.single_item_sold))
+
+    def test_number_sold(self):
+        self.assertEqual(self.single_item_sold.number_sold, 1)
+        self.assertEqual(self.single_item_sold_multiple_times.number_sold, 25)
+        self.assertEqual(self.single_item_sold_old_orders.number_sold, 25)
+
+    def test_best_selling(self):
+        self.assertListEqual(list(Item.get_best_selling()), [self.single_item_sold_multiple_times,
+                                                             self.single_item_sold_old_orders, self.single_item_sold])
+        self.assertEqual(Item.get_best_selling()[0], self.single_item_sold_multiple_times)
+        self.assertEqual(Item.get_best_selling()[1], self.single_item_sold_old_orders)
+
+    def test_best_selling_recently(self):
+        self.assertListEqual(list(Item.get_best_selling_recently()), [self.single_item_sold_multiple_times,
+                                                                      self.single_item_sold])
