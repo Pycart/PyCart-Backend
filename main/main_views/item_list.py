@@ -30,11 +30,11 @@ class ItemSearch(generics.ListAPIView):
 
         search_terms = self.request.GET.getlist('search', None)
 
-        # removing trailing slash on restangular calls
-        search_terms[0] = search_terms[0].lower().replace('/', '')
-
         if not search_terms:
             return []
+
+        # removing trailing slash on restangular calls
+        search_terms[0] = search_terms[0].lower().replace('/', '')
 
         terms = [term.split(" ") for term in search_terms][0]
 
@@ -44,20 +44,17 @@ class ItemSearch(generics.ListAPIView):
                           (Q(name__icontains=term) | Q(description__icontains=term) | Q(option__name__icontains=term))
                           for term in terms))
 
-        # creating a list so I can index later
-        # Couldn't find an easy way to index on a generator/queryset
-        results = list(results)
-
         # Using enumerate so I can get the index, storing index at end of list for future reference
         # Concats the item name and the item description into one list, using that for the items weight in the result
-        # TODO: Remove duplicate words from result_split prior ot sorting
-        results_split = [t.name.lower().split() + t.description.lower().split() + list((x,)) for x, t in enumerate(results)]
-
+        results_split = [list(set(item.name.lower().split() + item.description.lower().split() +
+                                  item.option.name.lower().split() + list((index,))))
+                         for index, item in enumerate(results)]
         # <magic>
         # Builds weight for each term
         # Example: The search has 3 terms, Red, Shoes, Pants
         # Red would have a weight of 3 since it is the first word, shoes would be 2 and pants would be 1
-        query_with_weights = [(x, len(search_terms[0].split()) - search_terms[0].split().index(x)) for x in terms]
+        query_with_weights = [(term, len(search_terms[0].split()) - search_terms[0].split().index(term))
+                              for term in terms]
 
         # This section will go through and weigh each item based on name and description weight.
         # This may be problematic if the description uses the key word multiple times.
@@ -68,11 +65,12 @@ class ItemSearch(generics.ListAPIView):
         # The resulting weight would be Red: 2, Pants: 1
         # However, the returned result would be, in this order, [Red Pants, Red Shoe, Red Swim Trunks, Blue Pants]
         get_weight = lambda x: ([weight for y, weight in query_with_weights if y==x] or [0])[0]
-        sorted_results = sorted([(l, sum([(get_weight(m)) for m in l])) for l in results_split], key=lambda lst: lst[1], reverse=True)
+        sorted_results = sorted([(item, sum([(get_weight(term)) for term in item])) for item in results_split],
+                                key=lambda lst: lst[1], reverse=True)
         # </magic>
 
         # Using the index stored from before I am able to access the original results list in order and
         #  create a new list that is now sorted based on the weight of each item in the search.
         # I am planning to expand this purely for educational purposes to include tags in the weighing and filtering process.
-        final_sorted = [results[result[0][-1]] for result in sorted_results]
+        final_sorted = [results[result[0][result[0].index(term)]] for result in sorted_results for term in result[0] if type(term) is int]
         return final_sorted
