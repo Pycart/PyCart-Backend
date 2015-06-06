@@ -67,7 +67,7 @@ class Order(models.Model):
     def current_status(self, status):
         now = timezone.now()
         self._current_status = status
-        self._current_status_date_modified = now
+        self._last_modified = now
 
     @property
     def last_modified(self):
