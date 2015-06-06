@@ -1,12 +1,15 @@
 import decimal
 import datetime
 
+from django.core import mail
 from django.test import TestCase
 from django.utils import timezone
+from django.utils.http import urlquote
 from model_mommy import mommy
-from main.main_models.item import Item
 
+from main.main_models.item import Item
 from main.main_models.order import Status, Order
+
 
 class StatusTestCase(TestCase):
     def setUp(self):
@@ -119,3 +122,24 @@ class ItemTestCase(TestCase):
         self.assertListEqual(list(Item.get_best_selling_recently()), [self.single_item_sold_multiple_times,
                                                                       self.single_item_sold])
 
+class ShopUserTestCase(TestCase):
+    def setUp(self):
+        self.shop_user = mommy.make('main.ShopUser', first_name='Alice', last_name='Smith')
+
+    def test_get_full_name(self):
+        self.assertEqual(self.shop_user.get_full_name(), str(self.shop_user.first_name + ' ' + self.shop_user.last_name))
+
+    def test_get_short_name(self):
+        self.assertEqual(self.shop_user.get_short_name(), self.shop_user.first_name)
+
+    def test_get_absolute_url(self):
+        self.assertEqual(self.shop_user.get_absolute_url(), "/users/{}/".format(urlquote(self.shop_user.email)))
+
+    def test_email_user(self):
+        subject = "Email Test"
+        message = "Message for email test"
+        from_email = "unit_test@localhost"
+        self.shop_user.email_user(subject, message, from_email)
+        self.assertEqual(len(mail.outbox), 1)
+        email = mail.outbox[0]
+        self.assertEqual(email.subject, subject)
