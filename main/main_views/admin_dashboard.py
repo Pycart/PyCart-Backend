@@ -1,14 +1,14 @@
 from rest_framework import generics, permissions, authentication
 from main.main_models.order import Status
 from main.models import Item, Option
-from main.serializers import ItemSerializer, OptionSerializer, ItemDetailSerializer, StatusSerializer
+from main.serializers import ItemSerializer, OptionSerializer, StatusSerializer
 
 
 class AdminListCreateItem(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
     authentication_classes = (authentication.TokenAuthentication,)
     queryset = Item.objects.all()
-    serializer_class = ItemDetailSerializer
+    serializer_class = ItemSerializer
 
 
 class AdminItemDetail(generics.RetrieveUpdateDestroyAPIView):
