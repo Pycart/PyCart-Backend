@@ -1,40 +1,45 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, authentication
+from main.main_models.order import Status
 from main.models import Item, Option
-from main.serializers import AdminCreateItemSerializer, AdminItemListSerializer, AdminItemDetailSerializer, \
-    AdminCreateOptionSerializer, AdminOptionListSerializer, AdminOptionDetailSerializer
+from main.serializers import ItemSerializer, OptionSerializer, ItemDetailSerializer, StatusSerializer
 
 
-class AdminCreateItem(generics.CreateAPIView):
+class AdminListCreateItem(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
+    authentication_classes = (authentication.TokenAuthentication,)
     queryset = Item.objects.all()
-    serializer_class = AdminCreateItemSerializer
-
-
-class AdminItemList(generics.RetrieveAPIView):
-    permission_classes = (permissions.IsAdminUser,)
-    queryset = Item.objects.all()
-    serializer_class = AdminItemListSerializer
+    serializer_class = ItemDetailSerializer
 
 
 class AdminItemDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAdminUser,)
+    authentication_classes = (authentication.TokenAuthentication,)
     queryset = Item.objects.all()
-    serializer_class = AdminItemDetailSerializer
+    serializer_class = ItemSerializer
 
 
-class AdminCreateOption(generics.CreateAPIView):
+class AdminListCreateOption(generics.ListCreateAPIView):
     permission_classes = (permissions.IsAdminUser,)
+    authentication_classes = (authentication.TokenAuthentication,)
     queryset = Option.objects.all()
-    serializer_class = AdminCreateOptionSerializer
-
-
-class AdminOptionList(generics.ListAPIView):
-    permission_classes = (permissions.IsAdminUser,)
-    queryset = Option.objects.all()
-    serializer_class = AdminOptionListSerializer
+    serializer_class = OptionSerializer
 
 
 class AdminOptionDetail(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (permissions.IsAdminUser,)
+    authentication_classes = (authentication.TokenAuthentication,)
     queryset = Option.objects.all()
-    serializer_class = AdminOptionDetailSerializer
+    serializer_class = OptionSerializer
+
+
+class AdminListCreateStatus(generics.ListCreateAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+    authentication_classes = (authentication.TokenAuthentication,)
+    queryset = Status.objects.all()
+    serializer_class = StatusSerializer
+
+class AdminStatusDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = (permissions.IsAdminUser,)
+    authentication_classes = (authentication.TokenAuthentication,)
+    queryset = Status.objects.all()
+    serializer_class = StatusSerializer
