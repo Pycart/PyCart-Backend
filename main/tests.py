@@ -1,22 +1,262 @@
 import decimal
 import datetime
+import json
 
 from django.core import mail
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.utils import timezone
 from django.utils.http import urlquote
 from model_mommy import mommy
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIClient
 
 from main.main_models.item import Item
 from main.main_models.order import Status, Order
+from main.serializers import ItemSerializer
 
 
-class StatusTestCase(TestCase):
+class AdminDashboardViewsTestCase(TestCase):
     def setUp(self):
+        self.client = APIClient()
+        self.option = mommy.make('main.Option')
+        self.items = mommy.make('main.Item', make_m2m=True, _quantity=50, option=self.option)
+        self.item = mommy.make('main.Item', make_m2m=True, option=self.option)
+        self.item_json = ItemSerializer(self.item).data
         self.status = mommy.make('main.Status')
 
+        self.admin_user = mommy.make('main.ShopUser')
+        self.admin_user.is_staff = True
+        self.admin_user.save()
+        self.reg_user = mommy.make('main.ShopUser')
+
+        # Generate token for token auth based on the user in the requests
+        self.admin_token = Token()
+        self.admin_token.key = self.admin_token.generate_key()
+        self.admin_token.user_id = self.admin_user.id
+        self.admin_token.save()
+        self.reg_token = Token()
+        self.reg_token.key = self.reg_token.generate_key()
+        self.reg_token.user_id = self.reg_user.id
+        self.reg_token.save()
+
+    def test_admin_create_item_view(self):
+        Item.objects.get(id=self.item.id).delete()
+
+        self.client.force_authenticate(self.admin_user, self.admin_token)
+        request = self.client.post(reverse('create_item'), data=self.item_json, format='json')
+        item = Item.objects.get(pk=52)
+
+        self.assertEqual(request.status_code, 201)
+        self.assertEqual(item.name, self.item_json['name'])
+        self.assertEqual(item.description, self.item_json['description'])
+        self.assertEqual(item.weight, decimal.Decimal(self.item_json['weight']))
+        self.assertEqual(item.price, decimal.Decimal(self.item_json['price']))
+        self.assertEqual(item.option.id, 1)
+
+    def test_admin_create_view_as_reg_user(self):
+        Item.objects.get(id=self.item.id).delete()
+
+        self.client.force_authenticate(self.reg_user, self.reg_token)
+        request = self.client.post(reverse('create_item'), data=self.item_json, format='json')
+
+        self.assertEqual(request.status_code, 403)
+        with self.assertRaises(ObjectDoesNotExist):
+            Item.objects.get(pk=52)
+
+    def test_admin_item_list(self):
+        self.client.force_authenticate(self.admin_user, self.admin_token)
+        request = self.client.get(reverse('create_item'))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual('count' in data, True)
+        self.assertEqual('next' in data, True)
+        self.assertEqual(len(data['results']), 25)
+
+        for result in data['results']:
+            self.assertEqual('id' in result, True)
+            self.assertEqual('name' in result, True)
+            self.assertEqual('description' in result, True)
+            self.assertEqual('weight' in result, True)
+            self.assertEqual('price' in result, True)
+            self.assertEqual('option' in result, True)
+            self.assertEqual('tags' in result, True)
+
+    def test_admin_item_list_as_reg_user(self):
+        self.client.force_authenticate(self.reg_user, self.reg_token)
+        request = self.client.get(reverse('create_item'))
+        self.assertEqual(request.status_code, 403)
+
+    def test_admin_option_list(self):
+        self.client.force_authenticate(self.admin_user, self.admin_token)
+        request = self.client.get(reverse('create_option'))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 1)
+        self.assertEqual(data['results'][0]['name'], self.option.name)
+
+    def test_admin_option_list_as_reg_user(self):
+        self.client.force_authenticate(self.reg_user, self.reg_token)
+        request = self.client.get(reverse('create_option'))
+        self.assertEqual(request.status_code, 403)
+
+    def test_admin_option_detail(self):
+        self.client.force_authenticate(self.admin_user, self.admin_token)
+        request = self.client.get(reverse('option_detail_update', args=(1,)))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['id'], self.option.id)
+        self.assertEqual(data['name'], self.option.name)
+
+    def test_admin_option_detail_as_reg_user(self):
+        self.client.force_authenticate(self.reg_user, self.reg_token)
+        request = self.client.get(reverse('option_detail_update', args=(1,)))
+        self.assertEqual(request.status_code, 403)
+
+    def test_admin_status_list(self):
+        self.client.force_authenticate(self.admin_user, self.admin_token)
+        request = self.client.get(reverse('create_status'))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 1)
+        self.assertEqual(data['results'][0]['status'], self.status.status)
+        self.assertEqual(data['results'][0]['description'], self.status.description)
+
+    def test_admin_status_list_as_reg_user(self):
+        self.client.force_authenticate(self.reg_user, self.reg_token)
+        request = self.client.get(reverse('create_status'))
+        self.assertEqual(request.status_code, 403)
+
+    def test_admin_status_detail(self):
+        self.client.force_authenticate(self.admin_user, self.admin_token)
+        request = self.client.get(reverse('status_detail_update', args=(1,)))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['status'], self.status.status)
+        self.assertEqual(data['id'], self.status.id)
+        self.assertEqual(data['description'], self.status.description)
+
+    def test_admin_status_detail_as_reg_user(self):
+        self.client.force_authenticate(self.reg_user, self.reg_token)
+        request = self.client.get(reverse('status_detail_update', args=(1,)))
+        self.assertEqual(request.status_code, 403)
+
+class ItemTestCase(TestCase):
+    def setUp(self):
+        self.items = mommy.make('main.Item', make_m2m=True, _quantity=25)
+        self.single_item_no_sales = mommy.make('main.Item', make_m2m=True)
+        self.single_item_sold = mommy.make('main.Item', make_m2m=True)
+        self.single_item_sold_multiple_times = mommy.make('main.Item', make_m2m=True)
+        self.single_item_sold_old_orders = mommy.make('main.item', make_m2m=True)
+        self.order_with_sold_item = mommy.make('main.Order', items=[self.single_item_sold], make_m2m=True)
+        self.orders_with_single_item = mommy.make('main.Order', items=[self.single_item_sold_multiple_times], make_m2m=True, _quantity=25)
+
+        old_date = timezone.now() - datetime.timedelta(days=60)
+        self.old_orders = mommy.make('main.Order', items=[self.single_item_sold_old_orders], make_m2m=True, _quantity=25)
+        for order in self.old_orders:
+            order.date_placed = old_date
+            order.save()
+
     def test_to_unicode(self):
-        self.assertEqual(str(self.status), self.status.status)
+        self.assertEqual(self.single_item_sold.name, str(self.single_item_sold))
+
+    def test_number_sold(self):
+        self.assertEqual(self.single_item_sold.number_sold, 1)
+        self.assertEqual(self.single_item_sold_multiple_times.number_sold, 25)
+        self.assertEqual(self.single_item_sold_old_orders.number_sold, 25)
+
+    def test_best_selling(self):
+        self.assertListEqual(list(Item.get_best_selling()), [self.single_item_sold_multiple_times,
+                                                             self.single_item_sold_old_orders, self.single_item_sold])
+        self.assertEqual(Item.get_best_selling()[0], self.single_item_sold_multiple_times)
+        self.assertEqual(Item.get_best_selling()[1], self.single_item_sold_old_orders)
+
+    def test_best_selling_recently(self):
+        self.assertListEqual(list(Item.get_best_selling_recently()), [self.single_item_sold_multiple_times,
+                                                                      self.single_item_sold])
+
+class ItemViewsTestCase(TestCase):
+    def setUp(self):
+        self.option1 = mommy.make('main.Option', make_m2m=True)
+        self.option2 = mommy.make('main.Option', make_m2m=True)
+        self.item1 = mommy.make('main.Item', option=self.option1, name='Item 1',
+                                description='item 1 description', make_m2m=True)
+
+        self.item2 = mommy.make('main.Item', option=self.option2, name='Item 2',
+                                description='item 1 description', make_m2m=True)
+
+        self.client = APIClient()
+
+    def test_item_search_with_null_search_term(self):
+        request = self.client.get(reverse('items_search'))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 0)
+
+    def test_item_search_by_option_name(self):
+        request = self.client.get(reverse('items_search'), {'search': self.option1.name})
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 1)
+        self.assertEqual(data['results'][0]['id'], 1)
+
+    def test_item_search_by_item_name(self):
+        request = self.client.get(reverse('items_search'), {'search': 'Item 1'})
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 2)
+        self.assertEqual(data['results'][0]['name'], "Item 1")
+        self.assertEqual(data['results'][1]['name'], "Item 2")
+
+    def test_item_search_by_item_description(self):
+        request = self.client.get(reverse('items_search'), {'search': 'description'})
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 2)
+        self.assertEqual(data['results'][0]['name'], 'Item 1')
+        self.assertEqual(data['results'][1]['name'], 'Item 2')
+
+    def test_item_list(self):
+        request = self.client.get(reverse('items_list'))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 2)
+        self.assertEqual(data['results'][0]['name'], self.item1.name)
+        self.assertEqual(decimal.Decimal(data['results'][0]['weight']), self.item1.weight)
+        self.assertEqual(decimal.Decimal(data['results'][0]['price']), self.item1.price)
+        self.assertEqual(data['results'][0]['option']['id'], self.option1.id)
+        self.assertEqual(data['results'][0]['option']['name'], self.option1.name)
+        self.assertEqual(data['results'][0]['description'], self.item1.description)
+
+    def test_item_detail(self):
+        request = self.client.get(reverse('item-detail', args=(1,)))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['name'], self.item1.name)
+        self.assertEqual(decimal.Decimal(data['weight']), self.item1.weight)
+        self.assertEqual(decimal.Decimal(data['price']), self.item1.price)
+        self.assertEqual(data['description'], self.item1.description)
+        self.assertEqual(data['option']['id'], self.option1.id)
+
+
+class OptionTestCase(TestCase):
+    def setUp(self):
+        self.option = mommy.make('main.Option')
+
+    def test_to_unicode(self):
+        self.assertEqual(str(self.option), self.option.name)
 
 class OrderTestCase(TestCase):
     def setUp(self):
@@ -81,47 +321,6 @@ class OrderTestCase(TestCase):
         self.assertNotEqual(self.single_order.last_modified, old_last_modified)
         self.assertEqual(self.single_order.current_status, status)
 
-class OptionTestCase(TestCase):
-    def setUp(self):
-        self.option = mommy.make('main.Option')
-
-    def test_to_unicode(self):
-        self.assertEqual(str(self.option), self.option.name)
-
-class ItemTestCase(TestCase):
-    def setUp(self):
-        self.items = mommy.make('main.Item', make_m2m=True, _quantity=25)
-        self.single_item_no_sales = mommy.make('main.Item', make_m2m=True)
-        self.single_item_sold = mommy.make('main.Item', make_m2m=True)
-        self.single_item_sold_multiple_times = mommy.make('main.Item', make_m2m=True)
-        self.single_item_sold_old_orders = mommy.make('main.item', make_m2m=True)
-        self.order_with_sold_item = mommy.make('main.Order', items=[self.single_item_sold], make_m2m=True)
-        self.orders_with_single_item = mommy.make('main.Order', items=[self.single_item_sold_multiple_times], make_m2m=True, _quantity=25)
-
-        old_date = timezone.now() - datetime.timedelta(days=60)
-        self.old_orders = mommy.make('main.Order', items=[self.single_item_sold_old_orders], make_m2m=True, _quantity=25)
-        for order in self.old_orders:
-            order.date_placed = old_date
-            order.save()
-
-    def test_to_unicode(self):
-        self.assertEqual(self.single_item_sold.name, str(self.single_item_sold))
-
-    def test_number_sold(self):
-        self.assertEqual(self.single_item_sold.number_sold, 1)
-        self.assertEqual(self.single_item_sold_multiple_times.number_sold, 25)
-        self.assertEqual(self.single_item_sold_old_orders.number_sold, 25)
-
-    def test_best_selling(self):
-        self.assertListEqual(list(Item.get_best_selling()), [self.single_item_sold_multiple_times,
-                                                             self.single_item_sold_old_orders, self.single_item_sold])
-        self.assertEqual(Item.get_best_selling()[0], self.single_item_sold_multiple_times)
-        self.assertEqual(Item.get_best_selling()[1], self.single_item_sold_old_orders)
-
-    def test_best_selling_recently(self):
-        self.assertListEqual(list(Item.get_best_selling_recently()), [self.single_item_sold_multiple_times,
-                                                                      self.single_item_sold])
-
 class ShopUserTestCase(TestCase):
     def setUp(self):
         self.shop_user = mommy.make('main.ShopUser', first_name='Alice', last_name='Smith')
@@ -143,3 +342,10 @@ class ShopUserTestCase(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         email = mail.outbox[0]
         self.assertEqual(email.subject, subject)
+
+class StatusTestCase(TestCase):
+    def setUp(self):
+        self.status = mommy.make('main.Status')
+
+    def test_to_unicode(self):
+        self.assertEqual(str(self.status), self.status.status)
