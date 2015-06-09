@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-
-from rest_framework import generics, permissions
-from main.main_models.user import ShopUser
-from main.serializers import ShopUserSerializer
-=======
 import djoser
 
 class ShopRegistrationView(djoser.views.RegistrationView):
@@ -12,7 +6,7 @@ class ShopRegistrationView(djoser.views.RegistrationView):
 class ShopLoginView(djoser.views.LoginView):
     pass
 
-class LogoutView(views.APIView):
+class ShopLogoutView(views.APIView):
     """
     use this to logout user (remover user authentication token)
     """
@@ -25,7 +19,7 @@ class LogoutView(views.APIView):
 
         return response.Response(status=status.HTTP_200_OK)
 
-class PasswordResetView(utils.ActionViewMixin, utils.SendEmailMixin, generics.GenericAPIView):
+class ShopPasswordResetView(utils.ActionViewMixin, utils.SendEmailMixin, generics.GenericAPIView):
     """
     Use this endpoint to send email to user with password reset link.
     """
@@ -58,7 +52,7 @@ class PasswordResetView(utils.ActionViewMixin, utils.SendEmailMixin, generics.Ge
         context['url'] = settings.get('PASSWORD_RESET_CONFIRM_URL').format(**context)
         return context
 
-class SetPasswordView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopSetPasswordView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to change user password.
     """
@@ -76,7 +70,7 @@ class SetPasswordView(utils.ActionViewMixin, generics.GenericAPIView):
         self.request.user.save()
         return respone.Response(status=status.HTTP_200_OK)
 
-class PasswordResetConfirmView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopPasswordResetConfirmView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to finish reset password process.
     """
@@ -96,7 +90,7 @@ class PasswordResetConfirmView(utils.ActionViewMixin, generics.GenericAPIView):
         return response.Response(status=status.HTTP_200_OK)
 
 
-class ActivationView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopActivationView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to activate user account.
     """
@@ -119,7 +113,7 @@ class ActivationView(utils.ActionViewMixin, generics.GenericAPIView):
         return Response(data=data, status=status.HTTP_200_OK)
 
 
-class SetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
+class ShopSetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
     """
     Use this endpoint to change user username.
     """
@@ -137,21 +131,12 @@ class SetUsernameView(utils.ActionViewMixin, generics.GenericAPIView):
         setattr(self.request.user, User.USERNAME_FIELD, serializer.data['new_' + User.USERNAME_FIELD])
         self.request.user.save()
         return response.Response(status=status.HTTP_200_OK)
->>>>>>> 75121e9e93be2f14abfd7fe6a8230ab1617a8a24
 
 
-class UserView(generics.RetrieveUpdateAPIView):
+class ShopUserView(generics.RetrieveUpdateAPIView):
     """
     Use this endpoint to retrieve/update user.
     """
-<<<<<<< HEAD
-    model = ShopUser
-    serializer_class = ShopUserSerializer
-    permission_classes = (permissions.IsAuthenticated, )
-
-    def get_object(self, *args, **kwargs):
-        return self.request.user
-=======
     model = User
     serializer_class = serializers.UserSerializer
     permission_classes = (
@@ -160,4 +145,3 @@ class UserView(generics.RetrieveUpdateAPIView):
 
     def get_object(self, *args, **kwargs):
         return self.request.user
->>>>>>> 75121e9e93be2f14abfd7fe6a8230ab1617a8a24

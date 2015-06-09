@@ -81,6 +81,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
+AUTH_USER_MODEL = 'auth.User'
+
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
