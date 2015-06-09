@@ -21,6 +21,7 @@ from main.main_views.order import OrdersView, RecentOrdersView
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
+from django.conf import settings
 
 
 urlpatterns = [
