@@ -25,14 +25,21 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Item
 
+    def create(self, validated_data):
+        option_data = validated_data.pop('option')
+        tag_data = validated_data.pop('tags')
+        instance = Item()
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.weight = validated_data.get('weight', instance.weight)
+        instance.price = validated_data.get('price', instance.price)
 
-class ItemDetailSerializer(serializers.ModelSerializer):
-    option = serializers.ReadOnlyField(source="option.name")
-    tags = TagListSerializerField()
+        option_instance, created = Option.objects.get_or_create(name=option_data['name'])
+        instance.option = option_instance
 
-    class Meta:
-        model = Item
-        exclude = ('tags',)
+        # TODO: Implement tag finding/creation
+        instance.save()
+        return instance
 
 
 class StatusSerializer(serializers.ModelSerializer):
