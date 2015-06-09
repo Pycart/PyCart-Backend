@@ -40,6 +40,22 @@ class ItemDetailSerializer(serializers.ModelSerializer):
                  )
         exclude = ('tags',)
 
+    def create(self, validated_data):
+        option_data = validated_data.pop('option')
+        tag_data = validated_data.pop('tags')
+        instance = Item()
+        instance.name = validated_data.get('name', instance.name)
+        instance.description = validated_data.get('description', instance.description)
+        instance.weight = validated_data.get('weight', instance.weight)
+        instance.price = validated_data.get('price', instance.price)
+
+        option_instance, created = Option.objects.get_or_create(name=option_data['name'])
+        instance.option = option_instance
+
+        # TODO: Implement tag finding/creation
+        instance.save()
+        return instance
+
 
 class StatusSerializer(serializers.ModelSerializer):
     class Meta:
@@ -60,7 +76,3 @@ class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
 
     class Meta:
         model = Shop_Item_Tag
-
-
-
-

@@ -3,10 +3,21 @@ import operator
 from django.db.models import Q
 from rest_framework import generics
 from rest_framework import mixins
+from main.main_models.item import Option
 
 from main.models import Item
 from main.paginators import CustomPageNumberPagination
-from main.serializers import ItemSerializer
+from main.serializers import ItemSerializer, OptionSerializer
+
+
+class ItemDetail(generics.RetrieveAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+
+class OptionList(generics.ListAPIView):
+    queryset = Option.objects.all()
+    serializer_class = OptionSerializer
 
 
 class ItemList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):

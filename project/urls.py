@@ -15,23 +15,20 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from main.main_views.item_list import ItemList, ItemSearch
-from main.main_views.item_detail import ItemDetail
+from main.main_views.item import ItemList, ItemSearch, ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView
-from django.conf import settings
 
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
-from main.main_views.authentication import ShopLoginView, ShopLogoutView, ShopPasswordResetView, ShopSetPasswordView, \
-    ShopPasswordResetConfirmView, ShopActivationView, ShopSetUsernameView, ShopUserView
+
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'auth/me/', UserView.as_view(), name='user_details'),
     url(r'auth/', include('djoser.urls')),
 
-    url(r'^$','main.views.api_root', name="api-root"),
+    url(r'^$', 'main.views.api_root', name="api-root"),
 
     url(r'^items_list/$', ItemList.as_view(), name="items_list"),
     url(r'^items_search/$', ItemSearch.as_view(), name="items_search"),
@@ -54,17 +51,12 @@ urlpatterns = [
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 
     #auth views
-    url(r'^register/$', ShopLoginView.as_view()),
-    url(r'^logout/$', ShopLogoutView.as_view()),
-    url(r'^password_reset/$', ShopPasswordResetView.as_view()),
-    url(r'^set_password/$', ShopSetPasswordView.as_view()),
-    url(r'^password_reset_confirm/$', ShopPasswordResetConfirmView.as_view()),
-    url(r'^activation_view/$', ShopActivationView.as_view()),
-    url(r'^set_username/$', ShopSetUsernameView.as_view()),
-    url(r'^user_view/$', ShopUserView.as_view()),
-
-
-
-
-
+    # url(r'^register/$', views.ShopLoginView.as_view()),
+    # url(r'^logout/$', views.ShopLogoutView.as_view()),
+    # url(r'^password_reset/$', views.ShopPasswordResetView.as_view()),
+    # url(r'^set_password/$', views.ShopSetPasswordView.as_view()),
+    # url(r'^password_reset_confirm/$', views.ShopPasswordResetConfirmView.as_view()),
+    # url(r'^activation_view/$', views.ShopActivationView.as_view()),
+    # url(r'^set_username/$', views.ShopSetUsernameView.as_view()),
+    # url(r'^user_view/$', views.ShopUserView.as_view()),
 ]
