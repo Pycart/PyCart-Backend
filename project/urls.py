@@ -17,14 +17,11 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from main.main_views.item import ItemList, ItemSearch, ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView
-<<<<<<< HEAD
+
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
-=======
-from main.main_views.authentication import ShopLoginView, ShopLogoutView, ShopPasswordResetView, ShopSetPasswordView, \
-    ShopPasswordResetConfirmView, ShopActivationView, ShopSetUsernameView, ShopUserView
->>>>>>> 75121e9e93be2f14abfd7fe6a8230ab1617a8a24
+
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -52,14 +49,14 @@ urlpatterns = [
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
 
     #auth views
-    url(r'^register/$', views.ShopLoginView.as_view()),
-    url(r'^logout/$', views.ShopLogoutView.as_view()),
-    url(r'^password_reset/$', views.ShopPasswordResetView.as_view()),
-    url(r'^set_password/$', views.ShopSetPasswordView.as_view()),
-    url(r'^password_reset_confirm/$', views.ShopPasswordResetConfirmView.as_view()),
-    url(r'^activation_view/$', views.ShopActivationView.as_view()),
-    url(r'^set_username/$', views.ShopSetUsernameView.as_view()),
-    url(r'^user_view/$', views.ShopUserView.as_view()),
+    # url(r'^register/$', views.ShopLoginView.as_view()),
+    # url(r'^logout/$', views.ShopLogoutView.as_view()),
+    # url(r'^password_reset/$', views.ShopPasswordResetView.as_view()),
+    # url(r'^set_password/$', views.ShopSetPasswordView.as_view()),
+    # url(r'^password_reset_confirm/$', views.ShopPasswordResetConfirmView.as_view()),
+    # url(r'^activation_view/$', views.ShopActivationView.as_view()),
+    # url(r'^set_username/$', views.ShopSetUsernameView.as_view()),
+    # url(r'^user_view/$', views.ShopUserView.as_view()),
 
 
 
