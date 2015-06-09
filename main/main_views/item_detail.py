@@ -12,3 +12,6 @@ class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
 class OptionList(generics.ListAPIView):
     queryset = Option.objects.all()
     serializer_class = OptionSerializer
+
+
+

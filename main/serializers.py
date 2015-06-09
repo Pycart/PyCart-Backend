@@ -32,6 +32,12 @@ class ItemDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Item
+        field = ('name',
+                 'description',
+                 'weight',
+                 'price',
+                 'image',
+                 )
         exclude = ('tags',)
 
 
