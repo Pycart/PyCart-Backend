@@ -15,8 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from main.main_views.item_list import ItemList, ItemSearch
-from main.main_views.item_detail import ItemDetail
+from main.main_views.item import ItemList, ItemSearch, ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
