@@ -181,6 +181,76 @@ class ItemTestCase(TestCase):
         self.assertListEqual(list(Item.get_best_selling_recently()), [self.single_item_sold_multiple_times,
                                                                       self.single_item_sold])
 
+class ItemViewsTestCase(TestCase):
+    def setUp(self):
+        self.option1 = mommy.make('main.Option', make_m2m=True)
+        self.option2 = mommy.make('main.Option', make_m2m=True)
+        self.item1 = mommy.make('main.Item', option=self.option1, name='Item 1',
+                                description='item 1 description', make_m2m=True)
+
+        self.item2 = mommy.make('main.Item', option=self.option2, name='Item 2',
+                                description='item 1 description', make_m2m=True)
+
+        self.client = APIClient()
+
+    def test_item_search_with_null_search_term(self):
+        request = self.client.get(reverse('items_search'))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 0)
+
+    def test_item_search_by_option_name(self):
+        request = self.client.get(reverse('items_search'), {'search': self.option1.name})
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 1)
+        self.assertEqual(data['results'][0]['id'], 1)
+
+    def test_item_search_by_item_name(self):
+        request = self.client.get(reverse('items_search'), {'search': 'Item 1'})
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 2)
+        self.assertEqual(data['results'][0]['name'], "Item 1")
+        self.assertEqual(data['results'][1]['name'], "Item 2")
+
+    def test_item_search_by_item_description(self):
+        request = self.client.get(reverse('items_search'), {'search': 'description'})
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 2)
+        self.assertEqual(data['results'][0]['name'], 'Item 1')
+        self.assertEqual(data['results'][1]['name'], 'Item 2')
+
+    def test_item_list(self):
+        request = self.client.get(reverse('items_list'))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['count'], 2)
+        self.assertEqual(data['results'][0]['name'], self.item1.name)
+        self.assertEqual(decimal.Decimal(data['results'][0]['weight']), self.item1.weight)
+        self.assertEqual(decimal.Decimal(data['results'][0]['price']), self.item1.price)
+        self.assertEqual(data['results'][0]['option']['id'], self.option1.id)
+        self.assertEqual(data['results'][0]['option']['name'], self.option1.name)
+        self.assertEqual(data['results'][0]['description'], self.item1.description)
+
+    def test_item_detail(self):
+        request = self.client.get(reverse('item-detail', args=(1,)))
+        data = json.loads(request.content)
+
+        self.assertEqual(request.status_code, 200)
+        self.assertEqual(data['name'], self.item1.name)
+        self.assertEqual(decimal.Decimal(data['weight']), self.item1.weight)
+        self.assertEqual(decimal.Decimal(data['price']), self.item1.price)
+        self.assertEqual(data['description'], self.item1.description)
+        self.assertEqual(data['option']['id'], self.option1.id)
+
+
 class OptionTestCase(TestCase):
     def setUp(self):
         self.option = mommy.make('main.Option')
