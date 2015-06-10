@@ -25,6 +25,9 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Item
 
+class OrderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
 
 class ItemDetailSerializer(serializers.ModelSerializer):
     option = serializers.ReadOnlyField(source="option.name")
