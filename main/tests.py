@@ -369,30 +369,10 @@ class BillingAddressTestCase(TestCase):
         self.assertEqual(str(self.address), self.address.name)
 
 
-class ShippingAddressTestCase(TestCase):
-    def setUp(self):
-        self.address = mommy.make('main.Address', type='Shipping')
-
-    def test_to_unicode(self):
-        self.assertEqual(str(self.address), self.address.name)
-
-
-# class ShopItemTagTestCase(TestCase):
-#     def setUp(self):
-#         # self.shop_tagged_item = mommy.make('main.Shop_Tagged_Item')
-#         self.shop_item_tag = mommy.make('main.Shop_Item_Tag')
-#
-#     def test_to_unicode(self):
-#         self.assertEqual(str(self.shop_item_tag), self.shop_item_tag.name)
-
-
 class ShopTaggedItemTestCase(TestCase):
     def setUp(self):
-        self.shop_tagged_item = mommy.make('main.Shop_Tagged_Item')
+        self.shop_tagged_item = mommy.make('main.Shop_Tagged_Item', make_m2m=True)
 
     def test_to_unicode(self):
-        self.assertEqual(str(self.shop_tagged_item), str(self.shop_tagged_item.tag))
+        self.assertEqual(str(self.shop_tagged_item.tag), self.shop_tagged_item.tag.name)
 
-
-        # shop_item_tag = Shop_Item_Tag.objects.get(pk=1)
-        # self.shop_tagged_item.tag = shop_item_tag

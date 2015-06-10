@@ -10,9 +10,6 @@ class Shop_Tagged_Item(GenericTaggedItemBase):
     start_date = models.DateTimeField(blank=True, null=True, db_index=True)
     end_date = models.DateTimeField(blank=True, null=True, db_index=True)
 
-    def __unicode__(self):
-        return self.tag
-
     class Meta:
         verbose_name = 'Tagged Item'
         verbose_name_plural = 'Tagged Items'
