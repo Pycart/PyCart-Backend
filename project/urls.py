@@ -50,14 +50,4 @@ urlpatterns = [
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-
-    #auth views
-    # url(r'^register/$', views.ShopLoginView.as_view()),
-    # url(r'^logout/$', views.ShopLogoutView.as_view()),
-    # url(r'^password_reset/$', views.ShopPasswordResetView.as_view()),
-    # url(r'^set_password/$', views.ShopSetPasswordView.as_view()),
-    # url(r'^password_reset_confirm/$', views.ShopPasswordResetConfirmView.as_view()),
-    # url(r'^activation_view/$', views.ShopActivationView.as_view()),
-    # url(r'^set_username/$', views.ShopSetUsernameView.as_view()),
-    # url(r'^user_view/$', views.ShopUserView.as_view()),
 ]

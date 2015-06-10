@@ -1,7 +1,6 @@
 from rest_framework import generics, permissions
 from main.main_models.user import ShopUser
 from main.serializers import ShopUserSerializer
-import djoser
 
 class UserView(generics.RetrieveUpdateAPIView):
     """

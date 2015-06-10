@@ -25,21 +25,6 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Item
 
-
-class ItemDetailSerializer(serializers.ModelSerializer):
-    option = serializers.ReadOnlyField(source="option.name")
-    tags = TagListSerializerField()
-
-    class Meta:
-        model = Item
-        field = ('name',
-                 'description',
-                 'weight',
-                 'price',
-                 'image',
-                 )
-        exclude = ('tags',)
-
     def create(self, validated_data):
         option_data = validated_data.pop('option')
         tag_data = validated_data.pop('tags')
