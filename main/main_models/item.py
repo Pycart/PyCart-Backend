@@ -16,6 +16,7 @@ class Item(models.Model):
     tags = TaggableManager(through=Shop_Tagged_Item)
     option = models.ForeignKey("Option")
     price = models.DecimalField(max_digits=6, decimal_places=2)
+    image = models.ImageField(upload_to='photos', blank=True, null=True)
 
     def __unicode__(self):
         return self.name

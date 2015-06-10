@@ -135,3 +135,9 @@ DJOSER = {
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+MEDIA_ROOT = BASE_DIR + '/main/media/'
+
+MEDIA_URL = '/media/'
+
+
+

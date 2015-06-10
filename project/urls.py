@@ -21,6 +21,7 @@ from main.main_views.order import OrdersView, RecentOrdersView
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
+from django.conf import settings
 
 
 urlpatterns = [
@@ -28,7 +29,7 @@ urlpatterns = [
     url(r'auth/me/', UserView.as_view(), name='user_details'),
     url(r'auth/', include('djoser.urls')),
 
-    url(r'^$','main.views.api_root', name="api-root"),
+    url(r'^$', 'main.views.api_root', name="api-root"),
 
     url(r'^items_list/$', ItemList.as_view(), name="items_list"),
     url(r'^items_search/$', ItemSearch.as_view(), name="items_search"),
@@ -48,6 +49,8 @@ urlpatterns = [
     url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
 
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+
     #auth views
     # url(r'^register/$', views.ShopLoginView.as_view()),
     # url(r'^logout/$', views.ShopLogoutView.as_view()),
@@ -57,9 +60,4 @@ urlpatterns = [
     # url(r'^activation_view/$', views.ShopActivationView.as_view()),
     # url(r'^set_username/$', views.ShopSetUsernameView.as_view()),
     # url(r'^user_view/$', views.ShopUserView.as_view()),
-
-
-
-
-
 ]
