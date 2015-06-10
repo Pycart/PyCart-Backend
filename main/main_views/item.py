@@ -58,7 +58,7 @@ class ItemSearch(generics.ListAPIView):
         # Using enumerate so I can get the index, storing index at end of list for future reference
         # Concats the item name and the item description into one list, using that for the items weight in the result
         results_split = [list(set(item.name.lower().split() + item.description.lower().split() +
-                                  item.option.name.lower().split() + list((index,))))
+                                  item.options.name.lower().split() + list((index,))))
                          for index, item in enumerate(results)]
         # <magic>
         # Builds weight for each term
