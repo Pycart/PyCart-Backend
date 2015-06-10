@@ -18,28 +18,30 @@ class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
 
+
 class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
-    option = OptionSerializer()
+    options = OptionSerializer(many=True)
 
     class Meta:
         model = Item
 
     def create(self, validated_data):
-        option_data = validated_data.pop('option')
+        option_data = validated_data.pop('options')
         tag_data = validated_data.pop('tags')
-        instance = Item()
-        instance.name = validated_data.get('name', instance.name)
-        instance.description = validated_data.get('description', instance.description)
-        instance.weight = validated_data.get('weight', instance.weight)
-        instance.price = validated_data.get('price', instance.price)
+        item = Item.objects.create(**validated_data)
 
-        option_instance, created = Option.objects.get_or_create(name=option_data['name'])
-        instance.option = option_instance
+        for option in option_data:
+            option, created = Option.objects.get_or_create(name=option['name'])
+            item.options.add(option)
+
+        # for tag in tag_data:
+        #     tag, created = Tag.objects.get_or_create(name=option['name'])
+        #     item.options.add(option)
 
         # TODO: Implement tag finding/creation
-        instance.save()
-        return instance
+        # instance.save()
+        return item
 
 
 class StatusSerializer(serializers.ModelSerializer):
