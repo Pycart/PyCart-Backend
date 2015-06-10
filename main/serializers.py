@@ -35,9 +35,8 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
             option, created = Option.objects.get_or_create(name=option['name'])
             item.options.add(option)
 
-        # for tag in tag_data:
-        #     tag, created = Tag.objects.get_or_create(name=option['name'])
-        #     item.options.add(option)
+        for tag in tag_data:
+            item.tags.add("%s" % tag["name"])
 
         # TODO: Implement tag finding/creation
         # instance.save()
