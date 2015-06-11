@@ -13,12 +13,12 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-from main.main_views.order_detail import OrderDetail
-from django.conf import settings
-from main.main_views.user_dashboard import UserDetail
 
+from main.main_views.order_detail import OrderDetail
+from main.main_views.user_dashboard import UserDetail
 from main.main_views.item import ItemList, ItemSearch, ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView, AddItemToOrderView, GetCart
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
@@ -35,8 +35,8 @@ urlpatterns = [
 
     url(r'^items_list/$', ItemList.as_view(), name="items_list"),
     url(r'^items_search/$', ItemSearch.as_view(), name="items_search"),
-    url(r'^items_detail/(?P<pk>[0-9]+)/$', ItemDetail.as_view(), name='item-detail'),
-    url(r'^order_detail/(?P<pk>[0-9]+)/$', OrderDetail.as_view(), name='order-detail'),
+    url(r'^items_detail/(?P<pk>[0-9]+)/$', ItemDetail.as_view(), name='item_detail'),
+    url(r'^order_detail/(?P<pk>[0-9]+)/$', OrderDetail.as_view(), name='order_detail'),
 
     url(r'^tags_list/$', TagList.as_view(), name="tags_list"),
     url(r'^header_tags/$', HeaderTagList.as_view(), name="header_tags"),

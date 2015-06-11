@@ -57,12 +57,18 @@ class Order(models.Model):
         self._total_price = total
 
     def place_order(self):
-        pass
+        raise NotImplementedError("Needs to be implemented")
 
     def recently_placed(self):
         # TODO: Make configurable amount of time order stays "recent", probably in settings.py or as a user attribute
         now = timezone.now()
         return now - datetime.timedelta(days=30) <= self.date_placed <= now
+
+    def get_avg_completed_order_total_price(self):
+        raise NotImplementedError("Needs to be implemented")
+
+    def get_total_incomplete_orders_count(self):
+        raise NotImplementedError("Needs to be implemented")
 
     @property
     def weight(self):

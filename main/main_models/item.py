@@ -23,7 +23,7 @@ class Item(models.Model):
 
     @property
     def number_sold(self):
-        sold = Order.objects.filter(items=self).count()
+        sold = Order.objects.filter(items=self, placed=True).count()
         return sold
 
     @staticmethod
