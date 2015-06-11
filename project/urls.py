@@ -15,16 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from main.main_views.item import ItemList, ItemSearch, ItemDetail
-from main.main_views.order import OrdersView, RecentOrdersView
 from main.main_views.order_detail import OrderDetail
+from django.conf import settings
 
+from main.main_views.item import ItemList, ItemSearch, ItemDetail
+from main.main_views.order import OrdersView, RecentOrdersView, AddItemToOrderView, GetCart
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
 from main.main_views.user_list import ShopUserList
-from django.conf import settings
-
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -49,9 +48,11 @@ urlpatterns = [
     url(r'^admin_dashboard/status/$', AdminListCreateStatus.as_view(), name="create_status"),
     url(r'^admin_dashboard/status/(?P<pk>[0-9]+)/$', AdminStatusDetail.as_view(), name="status_detail_update"),
 
+    url(r'^add_to_cart/', AddItemToOrderView.as_view(), name="add_to_cart"),
+    url(r'^get_cart/', GetCart.as_view(), name="get_cart"),
     url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
-    url(r'^ShopUserList/', ShopUserList.as_view(), name="recent_orders"),
+    url(r'^ShopUserList/', ShopUserList.as_view(), name="user_list"),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 ]

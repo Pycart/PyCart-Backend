@@ -29,7 +29,8 @@ class Item(models.Model):
     @staticmethod
     def get_best_selling():
         orders = Order.objects.all()
-        best_selling = Item.objects.filter(order__in=orders).annotate(itemcount=Count('id')).order_by('-itemcount')
+        best_selling = Item.objects.filter(order__in=orders, order__placed=True).annotate(
+            itemcount=Count('id')).order_by('-itemcount')
         return best_selling
 
     @staticmethod
