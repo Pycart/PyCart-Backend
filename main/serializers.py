@@ -14,6 +14,13 @@ class ShopUserSerializer(serializers.ModelSerializer):
         fields = ('email', 'first_name', 'last_name', 'is_staff')
         read_only_fields = ('email',)
 
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShopUser
+        fields = ('email', 'first_name', 'last_name',)
+        # should 'password' be a field they can update?
+
+
 
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:

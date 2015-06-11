@@ -15,8 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
+<<<<<<< HEAD
 from main.main_views.order_detail import OrderDetail
 from django.conf import settings
+=======
+from main.main_views.item import ItemList, ItemSearch, ItemDetail
+from main.main_views.user_dashboard import UserDetail
+from main.main_views.order import OrdersView, RecentOrdersView
+>>>>>>> added user_dashboard
 
 from main.main_views.item import ItemList, ItemSearch, ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView, AddItemToOrderView, GetCart
@@ -50,6 +56,8 @@ urlpatterns = [
 
     url(r'^add_to_cart/', AddItemToOrderView.as_view(), name="add_to_cart"),
     url(r'^get_cart/', GetCart.as_view(), name="get_cart"),
+    url(r'^user_dashboard/(?P<pk>[0-9]+)/$', UserDetail.as_view(), name="user_dashboard"),
+
     url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
     url(r'^ShopUserList/', ShopUserList.as_view(), name="user_list"),

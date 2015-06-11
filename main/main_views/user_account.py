@@ -8,7 +8,7 @@ class UserView(generics.RetrieveUpdateAPIView):
     """
     model = ShopUser
     serializer_class = ShopUserSerializer
-    permission_classes = (permissions.IsAuthenticated, )
+    #permission_classes = (permissions.IsAuthenticated, )
 
     def get_object(self, *args, **kwargs):
         return self.request.user
