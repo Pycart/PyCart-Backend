@@ -17,15 +17,22 @@ class Status(models.Model):
         return self.status
 
 
+class OrderItem(models.Model):
+    order = models.ForeignKey('main.Order')
+    item = models.ForeignKey('main.Item')
+    quantity = models.IntegerField(default=1)
+
+
 class Order(models.Model):
-    _current_status = models.ForeignKey("main.Status")
+    _current_status = models.ForeignKey("main.Status", blank=True, null=True)
     _last_modified = models.DateTimeField(auto_now=True)
     _weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     _total_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
     user = models.ForeignKey("main.ShopUser")
-    items = models.ManyToManyField("main.Item")
-    date_placed = models.DateTimeField(auto_now_add=True)
+    items = models.ManyToManyField("main.Item", through='main.OrderItem')
+    placed = models.BooleanField(default=False)
+    date_placed = models.DateTimeField(null=True, blank=True)
 
     # TODO: Add shipping carrier FK
     # shipping = models.ForeignKey()
@@ -35,15 +42,22 @@ class Order(models.Model):
 
     def set_weight(self):
         total = Decimal()
-        for item in self.items.all():
-            total += item.weight
+        for order_item in self.orderitem_set.all():
+            weight = order_item.item.weight
+            quantity = order_item.quantity
+            total += weight * quantity
         self._weight = total
 
     def set_total_price(self):
         total = Decimal()
-        for item in self.items.all():
-            total += item.price
+        for order_item in self.orderitem_set.all():
+            price = order_item.item.price
+            quantity = order_item.quantity
+            total += price * quantity
         self._total_price = total
+
+    def place_order(self):
+        pass
 
     def recently_placed(self):
         # TODO: Make configurable amount of time order stays "recent", probably in settings.py or as a user attribute

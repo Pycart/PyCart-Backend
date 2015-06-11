@@ -6,7 +6,7 @@ class Address(models.Model):
         "Billing": "Billing",
         "Shipping": "Shipping"
     }
-    type = models.CharField(max_length=20, choices=options)
+    type = models.CharField(max_length=20, choices=(options,))
     name = models.CharField(max_length=30)
     street = models.CharField(max_length=30)
     apt = models.CharField(max_length=30, blank=True)
