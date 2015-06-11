@@ -15,14 +15,9 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-<<<<<<< HEAD
 from main.main_views.order_detail import OrderDetail
 from django.conf import settings
-=======
-from main.main_views.item import ItemList, ItemSearch, ItemDetail
 from main.main_views.user_dashboard import UserDetail
-from main.main_views.order import OrdersView, RecentOrdersView
->>>>>>> added user_dashboard
 
 from main.main_views.item import ItemList, ItemSearch, ItemDetail
 from main.main_views.order import OrdersView, RecentOrdersView, AddItemToOrderView, GetCart

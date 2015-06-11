@@ -11,8 +11,9 @@ from main_models.order import Order, Status, OrderItem
 class ShopUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = ShopUser
-        fields = ('email', 'first_name', 'last_name', 'is_staff')
+        fields = ('id', 'email', 'first_name', 'last_name', 'is_staff')
         read_only_fields = ('email',)
+
 
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
