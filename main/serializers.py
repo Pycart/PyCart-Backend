@@ -18,6 +18,9 @@ class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
 
+class OrderDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Order
 
 class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
