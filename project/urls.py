@@ -21,6 +21,7 @@ from main.main_views.order import OrdersView, RecentOrdersView
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
+from main.main_views.user_list import ShopUserList
 from django.conf import settings
 
 
@@ -48,6 +49,7 @@ urlpatterns = [
 
     url(r'^allOrdersList/', OrdersView.as_view(), name="all_orders"),
     url(r'^recentOrdersList/', RecentOrdersView.as_view(), name="recent_orders"),
+    url(r'^ShopUserList/', ShopUserList.as_view(), name="recent_orders"),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 ]
