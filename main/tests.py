@@ -14,6 +14,8 @@ from rest_framework.test import APIClient
 
 from main.main_models.item import Item
 from main.main_models.order import Status, Order
+from main.main_models.address import Address
+from main.main_models.tag import Shop_Item_Tag, Shop_Tagged_Item
 from main.serializers import ItemSerializer
 
 
@@ -147,6 +149,7 @@ class AdminDashboardViewsTestCase(TestCase):
         request = self.client.get(reverse('status_detail_update', args=(1,)))
         self.assertEqual(request.status_code, 403)
 
+
 class ItemTestCase(TestCase):
     def setUp(self):
         self.items = mommy.make('main.Item', make_m2m=True, _quantity=25)
@@ -155,10 +158,12 @@ class ItemTestCase(TestCase):
         self.single_item_sold_multiple_times = mommy.make('main.Item', make_m2m=True)
         self.single_item_sold_old_orders = mommy.make('main.item', make_m2m=True)
         self.order_with_sold_item = mommy.make('main.Order', items=[self.single_item_sold], make_m2m=True)
-        self.orders_with_single_item = mommy.make('main.Order', items=[self.single_item_sold_multiple_times], make_m2m=True, _quantity=25)
+        self.orders_with_single_item = mommy.make('main.Order', items=[self.single_item_sold_multiple_times],
+                                                  make_m2m=True, _quantity=25)
 
         old_date = timezone.now() - datetime.timedelta(days=60)
-        self.old_orders = mommy.make('main.Order', items=[self.single_item_sold_old_orders], make_m2m=True, _quantity=25)
+        self.old_orders = mommy.make('main.Order', items=[self.single_item_sold_old_orders], make_m2m=True,
+                                     _quantity=25)
         for order in self.old_orders:
             order.date_placed = old_date
             order.save()
@@ -180,6 +185,7 @@ class ItemTestCase(TestCase):
     def test_best_selling_recently(self):
         self.assertListEqual(list(Item.get_best_selling_recently()), [self.single_item_sold_multiple_times,
                                                                       self.single_item_sold])
+
 
 class ItemViewsTestCase(TestCase):
     def setUp(self):
@@ -258,6 +264,7 @@ class OptionTestCase(TestCase):
     def test_to_unicode(self):
         self.assertEqual(str(self.option), self.option.name)
 
+
 class OrderTestCase(TestCase):
     def setUp(self):
         self.orders = mommy.make('main.Order', _quantity=20, make_m2m=True)
@@ -321,12 +328,14 @@ class OrderTestCase(TestCase):
         self.assertNotEqual(self.single_order.last_modified, old_last_modified)
         self.assertEqual(self.single_order.current_status, status)
 
+
 class ShopUserTestCase(TestCase):
     def setUp(self):
         self.shop_user = mommy.make('main.ShopUser', first_name='Alice', last_name='Smith')
 
     def test_get_full_name(self):
-        self.assertEqual(self.shop_user.get_full_name(), str(self.shop_user.first_name + ' ' + self.shop_user.last_name))
+        self.assertEqual(self.shop_user.get_full_name(),
+            str(self.shop_user.first_name + ' ' + self.shop_user.last_name))
 
     def test_get_short_name(self):
         self.assertEqual(self.shop_user.get_short_name(), self.shop_user.first_name)
@@ -343,9 +352,27 @@ class ShopUserTestCase(TestCase):
         email = mail.outbox[0]
         self.assertEqual(email.subject, subject)
 
+
 class StatusTestCase(TestCase):
     def setUp(self):
         self.status = mommy.make('main.Status')
 
     def test_to_unicode(self):
         self.assertEqual(str(self.status), self.status.status)
+
+
+class BillingAddressTestCase(TestCase):
+    def setUp(self):
+        self.address = mommy.make('main.Address', type='Billing')
+
+    def test_to_unicode(self):
+        self.assertEqual(str(self.address), self.address.name)
+
+
+class ShopTaggedItemTestCase(TestCase):
+    def setUp(self):
+        self.shop_tagged_item = mommy.make('main.Shop_Tagged_Item', make_m2m=True)
+
+    def test_to_unicode(self):
+        self.assertEqual(str(self.shop_tagged_item.tag), self.shop_tagged_item.tag.name)
+
