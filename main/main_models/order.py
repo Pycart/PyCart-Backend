@@ -70,6 +70,30 @@ class Order(models.Model):
     def get_total_incomplete_orders_count(self):
         raise NotImplementedError("Needs to be implemented")
 
+    @staticmethod
+    def average_order_price():
+        orders = Order.objects.filter(placed=True).count()
+        total_cost = sum([order.total_price for order in orders])
+        average_order_price = total_cost / orders
+        return average_order_price
+
+    @staticmethod
+    def incomplete_order_count():
+        orders = Order.objects.filter(placed=False).count()
+        return orders
+
+    @staticmethod
+    def average_order_price():
+        orders = Order.objects.filter(placed=True).count()
+        total_cost = sum([order.total_price for order in orders])
+        average_order_price = total_cost / orders
+        return average_order_price
+
+    @staticmethod
+    def incomplete_order_count():
+        orders = Order.objects.filter(placed=False).count()
+        return orders
+
     @property
     def weight(self):
         return self._weight
