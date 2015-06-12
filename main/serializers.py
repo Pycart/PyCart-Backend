@@ -83,12 +83,11 @@ class OrderSerializer(serializers.ModelSerializer):
         exclude = ('user',)
 
 
-class AddToOrderSerializer(serializers.ModelSerializer):
+class AddToOrderSerializer(serializers.Serializer):
     items = serializers.ListField()
     quantity = serializers.ListField()
 
     class Meta:
-        model = Order
         fields = ('items', 'quantity')
 
     def validate(self, attrs):
@@ -116,6 +115,8 @@ class AddToOrderSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+    def create(self, validated_data):
+        raise NotImplementedError("Create method not supported on Add To Order Serializer")
 
 class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:

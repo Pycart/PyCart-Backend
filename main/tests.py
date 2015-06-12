@@ -251,7 +251,7 @@ class ItemViewsTestCase(TestCase):
         self.assertEqual(data['results'][0]['description'], self.item1.description)
 
     def test_item_detail(self):
-        request = self.client.get(reverse('item-detail', args=(1,)))
+        request = self.client.get(reverse('item_detail', args=(1,)))
         data = json.loads(request.content)
 
         self.assertEqual(request.status_code, 200)
