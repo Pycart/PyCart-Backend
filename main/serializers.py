@@ -6,6 +6,7 @@ from main.main_models.user import ShopUser
 from main_models.item import Item, Option
 from main_models.tag import Shop_Item_Tag
 from main_models.order import Order, Status, OrderItem
+from main_models.save_card import SaveCard
 
 
 class ShopUserSerializer(serializers.ModelSerializer):
@@ -121,3 +122,7 @@ class AddToOrderSerializer(serializers.Serializer):
 class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Shop_Item_Tag
+
+class SaveCardSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SaveCard

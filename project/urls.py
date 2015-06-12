@@ -25,6 +25,7 @@ from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
 from main.main_views.user_list import ShopUserList
+from main.main_views.save_card import CardDetail
 
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
@@ -58,4 +59,6 @@ urlpatterns = [
     url(r'^ShopUserList/', ShopUserList.as_view(), name="user_list"),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+
+    url(r'^saved_card/', CardDetail.as_view(), name="saved_card")
 ]
