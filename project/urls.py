@@ -26,6 +26,7 @@ from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
 from main.main_views.user_list import ShopUserList
 from main.main_views.save_card import CardDetail
+from main.main_views.save_card import CardList
 
 urlpatterns = [
     url(r'^$', 'main.views.api_root', name="api-root"),
@@ -88,5 +89,6 @@ urlpatterns = [
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
 
-    url(r'^saved_card/', CardDetail.as_view(), name="saved_card"),
+    url(r'^saved_card/(?P<pk>[0-9]+)/$', CardDetail.as_view(), name="saved_card"),
+    url(r'^all_saved_cards/', CardList.as_view(), name="all_saved_cards"),
 ]
