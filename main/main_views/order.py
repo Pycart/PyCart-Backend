@@ -48,20 +48,6 @@ class AddItemToOrderView(UpdateAPIView):
     permission_classes = (permissions.IsAuthenticated,)
 
     def put(self, request, *args, **kwargs):
-        # item_indexes = self.request.data.pop('items')
-        # items = []
-        # for index in item_indexes:
-        #     if type(index) == int:
-        #         item = Item.objects.get(pk=index)
-        #         serialized_item = ItemSerializer(item).data
-        #         items.append(serialized_item)
-        #     else:
-        #         item = Item.objects.get(pk=index['id'])
-        #         serialized_item = ItemSerializer(item).data
-        #         items.append(serialized_item)
-        #
-        # self.request.data['items'] = items
-
         serializer = AddToOrderSerializer(data=self.request.data)
         if serializer.is_valid():
             order = serializer.update(self.get_object(), serializer.validated_data)
