@@ -25,6 +25,7 @@ from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
 from main.main_views.user_list import ShopUserList
+from main.main_views.save_card import CardDetail
 
 urlpatterns = [
     url(r'^$', 'main.views.api_root', name="api-root"),
@@ -77,6 +78,7 @@ urlpatterns = [
     url(r'^order_detail/(?P<pk>[0-9]+)/$', OrderDetail.as_view(), name='order_detail'),
     url(r'^ShopUserList/', ShopUserList.as_view(), name="user_list"),
 
+
     # TODO: Change front end to go to these urls instead
     # url(r'^user/user_dashboard/(?P<pk>[0-9]+)/$', UserDetail.as_view(), name="user_dashboard"),
     # url(r'^user/orders/$', OrdersView.as_view(), name="all_orders"),
@@ -84,4 +86,7 @@ urlpatterns = [
     # url(r'^user/orders/(?P<pk>[0-9]+)/$', OrderDetail.as_view(), name='order_detail'),
 
 
+    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
+
+    url(r'^saved_card/', CardDetail.as_view(), name="saved_card"),
 ]
