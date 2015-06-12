@@ -22,18 +22,18 @@ class UserDetailSerializer(serializers.ModelSerializer):
         # should 'password' be a field they can update?
 
 
-
 class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
+
 
 class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
 
+
 class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
-    options = OptionSerializer(many=True)
 
     class Meta:
         model = Item
@@ -53,6 +53,23 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
         # TODO: Implement tag finding/creation
         # instance.save()
         return item
+
+
+class NestedItemField(serializers.RelatedField):
+    def to_representation(self, value):
+        items = []
+        for item in self.root.instance.variants.all():
+            data = ItemDetailSerializer(item).data
+            items.append(data)
+        return items
+
+
+class ItemDetailSerializer(serializers.ModelSerializer):
+    variants = NestedItemField(read_only=True)
+    top_level_item = serializers.IntegerField()
+
+    class Meta:
+        model = Item
 
 
 class StatusSerializer(serializers.ModelSerializer):
@@ -117,6 +134,7 @@ class AddToOrderSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         raise NotImplementedError("Create method not supported on Add To Order Serializer")
+
 
 class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:

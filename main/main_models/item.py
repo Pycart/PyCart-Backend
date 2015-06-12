@@ -30,6 +30,20 @@ class Item(models.Model):
             qs.extend(item.get_all_variants(include_self=True))
         return chain([q for q in qs])
 
+    def get_top_level_item(self):
+        upper = self
+        if self.is_variant:
+            upper = self.master.get_top_level_item()
+        return upper
+
+    @property
+    def top_level_item(self):
+        return self.get_top_level_item().id
+
+    @top_level_item.setter
+    def top_level_item(self, value):
+        raise AttributeError("Cannot set attribute")
+
     def __unicode__(self):
         return self.name
 

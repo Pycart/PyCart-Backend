@@ -7,12 +7,12 @@ from rest_framework import mixins
 from main.main_models.item import Option
 from main.models import Item
 from main.paginators import CustomPageNumberPagination
-from main.serializers import ItemSerializer, OptionSerializer
+from main.serializers import ItemSerializer, OptionSerializer, ItemDetailSerializer
 
 
 class ItemDetail(generics.RetrieveAPIView):
     queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+    serializer_class = ItemDetailSerializer
 
 
 class OptionList(generics.ListAPIView):
@@ -57,9 +57,8 @@ class ItemSearch(generics.ListAPIView):
 
         # Using enumerate so I can get the index, storing index at end of list for future reference
         # Concats the item name and the item description into one list, using that for the items weight in the result
-        results_split = [list(set(item.name.lower().split() + item.description.lower().split() +
-                                  [x.name for x in item.options.all()] + list((index,)))) for index, item in
-                         enumerate(results)]
+        results_split = [list(set(item.name.lower().split() + item.description.lower().split() + list((index,))))
+                         for index, item in enumerate(results)]
 
         item = Item()
         # <magic>
@@ -85,6 +84,9 @@ class ItemSearch(generics.ListAPIView):
         # Using the index stored from before I am able to access the original results list in order and
         #  create a new list that is now sorted based on the weight of each item in the search.
         # I am planning to expand this purely for educational purposes to include tags in the weighing and filtering process.
-        final_sorted = [results[result[0][result[0].index(term)]] for result in sorted_results for term in result[0] if
+        all_results = [results[result[0][result[0].index(term)]] for result in sorted_results for term in result[0] if
                         type(term) is int]
-        return final_sorted
+
+        # Gets the top level item for each sub item that hit in the results. Then returns only the one top level item to prevent duplicates
+        filtered_and_sorted = list(set([Item.objects.get(id=item.get_top_level_item().id) for item in all_results if item.is_variant]))
+        return filtered_and_sorted
