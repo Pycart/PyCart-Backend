@@ -7,6 +7,7 @@ from main_models.item import Item, Option
 from main_models.tag import Shop_Item_Tag
 from main_models.order import Order, Status, OrderItem
 from main_models.save_card import SaveCard
+from main_models.address import Address
 
 
 class ShopUserSerializer(serializers.ModelSerializer):
@@ -141,6 +142,14 @@ class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
     class Meta:
         model = Shop_Item_Tag
 
+
 class SaveCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = SaveCard
+
+class AddressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Address
+        fields = ('name', 'street', 'apt', 'city', 'state', 'zip')
+        read_only_fields = ('type', 'user')
+
