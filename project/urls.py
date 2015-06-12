@@ -26,6 +26,8 @@ from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
 from main.main_views.user_list import ShopUserList
 from main.main_views.save_card import CardDetail
+from main.main_views.user_address import *
+
 
 urlpatterns = [
     url(r'^$', 'main.views.api_root', name="api-root"),
@@ -87,6 +89,7 @@ urlpatterns = [
 
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-
     url(r'^saved_card/', CardDetail.as_view(), name="saved_card"),
+
+    url(r'^user_adss/', UserAddress.as_view(), name='user_address'),
 ]
