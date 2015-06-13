@@ -27,6 +27,7 @@ from main.main_views.user_account import UserView
 from main.main_views.user_list import ShopUserList
 from main.main_views.save_card import CardDetail
 from main.main_views.user_address import *
+from main.main_views.stock_record_views import StockRecords
 
 
 urlpatterns = [
@@ -92,4 +93,5 @@ urlpatterns = [
     url(r'^saved_card/', CardDetail.as_view(), name="saved_card"),
 
     url(r'^user_adss/', UserAddress.as_view(), name='user_address'),
+    url(r'^stock_record/$', StockRecords.as_view(), name="stock_record"),
 ]

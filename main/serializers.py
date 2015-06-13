@@ -8,6 +8,7 @@ from main_models.tag import Shop_Item_Tag
 from main_models.order import Order, Status, OrderItem
 from main_models.save_card import SaveCard
 from main_models.address import Address
+from main_models.stock_record import StockRecord
 
 
 class ShopUserSerializer(serializers.ModelSerializer):
@@ -33,6 +34,9 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
 
+class StockRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = StockRecord
 
 class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
