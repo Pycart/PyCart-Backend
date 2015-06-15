@@ -3,6 +3,7 @@ from mptt.admin import MPTTModelAdmin
 
 from models import *
 
+
 def create_modeladmin(modeladmin, model, name=None):
     class Meta:
         proxy = True
@@ -51,3 +52,4 @@ admin.site.register(Shop_Tagged_Item)
 admin.site.register(Option)
 admin.site.register(SaveCard)
 admin.site.register(Address)
+admin.site.register(StockRecord)
