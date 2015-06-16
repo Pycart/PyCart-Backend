@@ -91,13 +91,9 @@ urlpatterns = [
 
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT}),
-    url(r'^saved_card/', CardDetail.as_view(), name="saved_card"),
 
     url(r'^user_adss/', UserAddress.as_view(), name='user_address'),
     url(r'^stock_record/$', StockRecords.as_view(), name="stock_record"),
-
-    url(r'^saved_card/(?P<pk>[0-9]+)/$', CardDetail.as_view(), name="saved_card"),
-    url(r'^all_saved_cards/', CardList.as_view(), name="all_saved_cards"),
 
     url(r'^saved_card/(?P<pk>[0-9]+)/$', CardDetail.as_view(), name="saved_card"),
     url(r'^all_saved_cards/', CardList.as_view(), name="all_saved_cards"),
