@@ -34,9 +34,11 @@ class OrderDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
 
+
 class StockRecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockRecord
+
 
 class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
     tags = TagListSerializerField()
@@ -45,13 +47,13 @@ class ItemSerializer(TaggitSerializer, serializers.ModelSerializer):
         model = Item
 
     def create(self, validated_data):
-        option_data = validated_data.pop('options')
+        # option_data = validated_data.pop('options')
         tag_data = validated_data.pop('tags')
         item = Item.objects.create(**validated_data)
 
-        for option in option_data:
-            option, created = Option.objects.get_or_create(name=option['name'])
-            item.options.add(option)
+        # for option in option_data:
+        #     option, created = Option.objects.get_or_create(name=option['name'])
+        #     item.options.add(option)
 
         for tag in tag_data:
             item.tags.add("%s" % tag["name"])
@@ -150,6 +152,7 @@ class TagSerializer(TaggitSerializer, serializers.ModelSerializer):
 class SaveCardSerializer(serializers.ModelSerializer):
     class Meta:
         model = SaveCard
+
 
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
