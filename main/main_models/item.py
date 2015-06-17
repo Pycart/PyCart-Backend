@@ -1,10 +1,9 @@
 import datetime
+from itertools import chain
 
 from django.db import models
 from django.db.models import Count
 from django.utils import timezone
-from itertools import chain
-
 from taggit.managers import TaggableManager
 
 from main.main_models.order import Order
@@ -16,11 +15,9 @@ class Item(models.Model):
     description = models.TextField()
     weight = models.DecimalField(max_digits=6, decimal_places=2)
     tags = TaggableManager(through=Shop_Tagged_Item)
-    # options = models.ManyToManyField("Option")
     price = models.DecimalField(max_digits=6, decimal_places=2)
     image = models.ImageField(upload_to='photos', blank=True, null=True)
     master = models.ForeignKey('self', related_name='variants', null=True, blank=True, db_index=True)
-    is_variant = models.BooleanField(default=False)
 
     def get_all_variants(self, include_self=False):
         qs = []
@@ -42,10 +39,13 @@ class Item(models.Model):
 
     @top_level_item.setter
     def top_level_item(self, value):
-        raise AttributeError("Cannot set attribute")
+        raise AttributeError("Cannot set top level item directly")
 
-    def __unicode__(self):
-        return self.name
+    @property
+    def is_variant(self):
+        if self.master is None:
+            return False
+        return True
 
     @property
     def number_sold(self):
@@ -64,6 +64,9 @@ class Item(models.Model):
         date_range = timezone.now() - datetime.timedelta(days=days)
         best_selling_recent = Item.get_best_selling().filter(order__date_placed__gte=date_range)
         return best_selling_recent
+
+    def __unicode__(self):
+        return self.name
 
     class Meta:
         verbose_name = 'Item'
