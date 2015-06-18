@@ -100,12 +100,12 @@ class OrderItemField(serializers.RelatedField):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    _current_status = StatusSerializer(required=False, many=False)
+    current_status = StatusSerializer(required=False, many=False)
     items = OrderItemField(many=True, read_only=True)
 
     class Meta:
         model = Order
-        exclude = ('user',)
+        fields = ('id', 'current_status', 'items', 'last_modified', 'weight', 'total_price', 'placed', 'date_placed')
 
 
 class AddToOrderSerializer(serializers.Serializer):
@@ -117,10 +117,8 @@ class AddToOrderSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         for item in attrs['items']:
-            try:
-                Item.objects.get(id=item)
-            except ObjectDoesNotExist:
-                raise serializers.ValidationError("Item must exist to add it to an order!")
+            if not Item.objects.filter(id=item).exists():
+                raise serializers.ValidationError("Could not find Item with ID of {}.".format(item))
         return attrs
 
     def update(self, instance, validated_data):
@@ -138,6 +136,7 @@ class AddToOrderSerializer(serializers.Serializer):
                 order_item.quantity += quantity
                 order_item.save()
             else:
+                # Putting a negative quantity removes item from the cart
                 order_item.delete()
         return instance
 

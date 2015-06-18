@@ -12,6 +12,9 @@ from main.serializers import OrderSerializer, AddToOrderSerializer
 
 
 class OrdersView(ListAPIView):
+    """
+    Returns a list of all this users orders.
+    """
     serializer_class = OrderSerializer
     authentication_classes = (authentication.TokenAuthentication, )
     if settings.DEBUG:
@@ -25,6 +28,9 @@ class OrdersView(ListAPIView):
 
 
 class RecentOrdersView(ListAPIView):
+    """
+    Returns a list of all this users recent orders. By default its 30 days.
+    """
     serializer_class = OrderSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     if settings.DEBUG:
@@ -60,18 +66,17 @@ class GetCart(RetrieveAPIView):
 class AddItemToOrderView(UpdateAPIView):
     """
     This view takes in two lists, 'items' and 'quantity'. The items list is a set of item ID's that the user would
-    like to add to an order. Then in the quantities list the amount of each item that user would like. A quantity of 0
+    like to add to an order. Then in the quantities list the amount of each item that user would like. A quantity of -1
     would remove the item from the cart, if it exists already. Other wise, it would be ignored.
 
     For example:
     {
-        Items: [1, 3, 6, 7]
-        Quantity: [3, 0, 1, 1]
+        Items: [1, 5, 6, 7]
+        Quantity: [3, -1, 1, 1]
     }
 
-    The input above would add the Item with index of 1 with a quantity of 3 to the cart,
-     it would delete the Item with an ID of 3 from the cart, add the Item with the ID of 6 to the cart with a
-     quantity of 1 and finally would add the Item with the ID of 7 to the cart with a quantity of 1 as well.
+    The input above would increment the Item with index of 1 quantity by 3,
+      delete the Item with an ID of 5 from the cart and increment the quantity of Items with the ID of 6 and 7 by 1.
     """
     serializer_class = AddToOrderSerializer
     authentication_classes = (authentication.TokenAuthentication, )
