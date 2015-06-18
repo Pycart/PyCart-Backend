@@ -21,7 +21,7 @@ from main.main_views.billing import PlaceOrder
 from main.main_views.order_detail import OrderDetail
 from main.main_views.user_dashboard import UserDetail
 from main.main_views.item import ItemList, ItemSearch, ItemDetail
-from main.main_views.order import OrdersView, RecentOrdersView, AddItemToOrderView, GetCart
+from main.main_views.order import OrdersView, RecentOrdersView, UpdateCart, GetCart
 from main.main_views.tags import TagList, HeaderTagList, SubheaderTagList
 from main.main_views.admin_dashboard import *
 from main.main_views.user_account import UserView
@@ -54,7 +54,7 @@ urlpatterns = [
     url(r'^admin_dashboard/shop_user_list/', AdminShopUserList.as_view(), name="user_list"),
 
     url(r'^cart/$', GetCart.as_view(), name="get_cart"),
-    url(r'^cart/add/$', AddItemToOrderView.as_view(), name="add_to_cart"),
+    url(r'^cart/update/$', UpdateCart.as_view(), name="add_to_cart"),
     url(r'^cart/checkout/$', PlaceOrder.as_view(), name="checkout"),
 
 
