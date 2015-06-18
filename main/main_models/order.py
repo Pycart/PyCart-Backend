@@ -6,8 +6,22 @@ from django.utils import timezone
 
 
 class Status(models.Model):
+    _default = models.BooleanField(default=False)
     status = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
+
+    @property
+    def default(self):
+        return self._default
+
+    @default.setter
+    def default(self, value):
+        if value:
+            current_default = Status.objects.get(_default=True)
+            current_default._default = False
+            current_default.save()
+            self._default = True
+            self.save()
 
     class Meta:
         verbose_name = 'Order Status'
@@ -57,7 +71,9 @@ class Order(models.Model):
         self._total_price = total
 
     def place_order(self):
-        raise NotImplementedError("Needs to be implemented")
+        self.current_status = Status.objects.get(_default=True)
+        self.placed = True
+        self.date_placed = timezone.now()
 
     def recently_placed(self):
         # TODO: Make configurable amount of time order stays "recent", probably in settings.py or as a user attribute
