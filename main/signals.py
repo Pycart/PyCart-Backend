@@ -1,10 +1,17 @@
-from django.db.models.signals import m2m_changed
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
-from main.main_models.order import Order
 
 
-@receiver(m2m_changed, sender=Order.items.through)
+@receiver(post_save, sender="main.OrderItem")
 def update_order_when_items_changed(sender, instance, **kwargs):
-    instance.set_weight()
-    instance.set_total_price()
-    instance.save()
+    order = instance.order
+    order.set_weight()
+    order.set_total_price()
+    order.save()
+
+@receiver(post_delete, sender="main.OrderItem")
+def update_order_when_items_deleted(sender, instance, **kwargs):
+    order = instance.order
+    order.set_weight()
+    order.set_total_price()
+    order.save()
