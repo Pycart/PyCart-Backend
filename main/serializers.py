@@ -128,12 +128,17 @@ class AddToOrderSerializer(serializers.Serializer):
         quantities = validated_data['quantity']
         for index, item in enumerate(items):
             item = Item.objects.get(id=item)
+            quantity = quantities[index]
             order_item, created = OrderItem.objects.get_or_create(order=instance, item=item)
-            order_item.quantity = quantities[index]
-            if order_item.quantity == 0:
-                order_item.delete()
-            else:
+
+            if quantity > 0 and created:
+                order_item.quantity = quantity
                 order_item.save()
+            elif quantity > 0 and not created:
+                order_item.quantity += quantity
+                order_item.save()
+            else:
+                order_item.delete()
 
         instance.set_weight()
         instance.set_total_price()
