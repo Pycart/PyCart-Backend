@@ -134,15 +134,11 @@ class AddToOrderSerializer(serializers.Serializer):
             if quantity > 0 and created:
                 order_item.quantity = quantity
                 order_item.save()
-            elif quantity > 0 and not created:
+            elif quantity >= 0 and not created:
                 order_item.quantity += quantity
                 order_item.save()
             else:
                 order_item.delete()
-
-        instance.set_weight()
-        instance.set_total_price()
-        instance.save()
         return instance
 
     def create(self, validated_data):
