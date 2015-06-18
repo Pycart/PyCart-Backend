@@ -8,4 +8,7 @@ djangorestframework==3.1.2
 djoser==0.3.0
 model-mommy==1.2.4
 Pillow==2.8.2
+requests==2.7.0
 six==1.9.0
+stripe==1.22.3
+wheel==0.24.0

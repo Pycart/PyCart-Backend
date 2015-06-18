@@ -16,6 +16,7 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from main.main_views.billing import PlaceOrder
 
 from main.main_views.order_detail import OrderDetail
 from main.main_views.user_dashboard import UserDetail
@@ -54,6 +55,8 @@ urlpatterns = [
 
     url(r'^cart/$', GetCart.as_view(), name="get_cart"),
     url(r'^cart/add/$', AddItemToOrderView.as_view(), name="add_to_cart"),
+    url(r'^cart/checkout/$', PlaceOrder.as_view(), name="checkout"),
+
 
     url(r'^user/user_dashboard/(?P<pk>[0-9]+)/$', UserDetail.as_view(), name="user_dashboard"),
     url(r'^user/orders/$', OrdersView.as_view(), name="all_orders"),
