@@ -100,49 +100,58 @@ class OrderItemField(serializers.RelatedField):
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    _current_status = StatusSerializer(required=False, many=False)
+    current_status = StatusSerializer(required=False, many=False)
     items = OrderItemField(many=True, read_only=True)
 
     class Meta:
         model = Order
-        exclude = ('user',)
+        fields = ('id', 'current_status', 'items', 'last_modified', 'weight', 'total_price', 'placed', 'date_placed')
 
 
-class AddToOrderSerializer(serializers.Serializer):
+class ItemOrderUpdateSerializer(serializers.Serializer):
     items = serializers.ListField()
     quantity = serializers.ListField()
+    increment = serializers.BooleanField()
 
     class Meta:
-        fields = ('items', 'quantity')
+        fields = ('items', 'quantity', 'increment')
 
     def validate(self, attrs):
-        for item in attrs['items']:
-            try:
-                Item.objects.get(id=item)
-            except ObjectDoesNotExist:
-                raise serializers.ValidationError("Item must exist to add it to an order!")
+        items = attrs['items']
+        quantity = attrs['quantity']
+
+        if len(items) != len(quantity):
+            raise serializers.ValidationError("Quantities do not match the number of items.")
+
+        for item in items:
+            if not Item.objects.filter(id=item).exists():
+                raise serializers.ValidationError("Could not find Item with ID of {}.".format(item))
         return attrs
 
     def update(self, instance, validated_data):
         items = validated_data['items']
         quantities = validated_data['quantity']
+        increment = validated_data['increment']
+
         for index, item in enumerate(items):
             item = Item.objects.get(id=item)
             quantity = quantities[index]
             order_item, created = OrderItem.objects.get_or_create(order=instance, item=item)
 
-            if quantity > 0 and created:
-                order_item.quantity = quantity
-                order_item.save()
-            elif quantity > 0 and not created:
+            # Item quantity defaults to 1 so incrementing it will cause you to have one extra in your cart.
+            if created and increment:
+                quantity -= 1
+
+            if increment:
                 order_item.quantity += quantity
+            else:
+                order_item.quantity = quantity
+
+            if order_item.quantity > 0:
                 order_item.save()
             else:
                 order_item.delete()
 
-        instance.set_weight()
-        instance.set_total_price()
-        instance.save()
         return instance
 
     def create(self, validated_data):
