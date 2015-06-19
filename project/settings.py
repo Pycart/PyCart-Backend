@@ -140,5 +140,6 @@ MEDIA_ROOT = BASE_DIR + '/main/media/'
 
 MEDIA_URL = '/media/'
 
+EMAIL_HOST_USER = 'test@test.com'
 
 

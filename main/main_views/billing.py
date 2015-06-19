@@ -6,6 +6,7 @@ from django.conf import settings
 import stripe
 from main.main_models.order import Order
 from main.serializers import OrderSerializer
+from main.utils import send_order_confirmation
 
 
 class PlaceOrder(APIView):
@@ -24,19 +25,18 @@ class PlaceOrder(APIView):
         except ObjectDoesNotExist:
             return Response("no open orders")
 
-        card = request.POST['card']
+        card = request.data
         try:
             stripe_token = stripe.Token.create(
                 card={
                     "number": card.get('number'),
-                    "exp_month": card.get('expMonth'),
-                    "exp_year": card.get('expYear'),
+                    "exp_month": card.get('exp_month'),
+                    "exp_year": card.get('exp_year'),
                     "cvc": card.get('cvc')
                 },
             )
-
             charge = stripe.Charge.create(
-                amount=order.total_price,
+                amount=int(order.total_price * 100),
                 currency="usd",
                 source=stripe_token.get('id'),
                 description="Order Number: {}".format(order.id)
@@ -54,6 +54,7 @@ class PlaceOrder(APIView):
         if response.get('status') == 'succeeded':
             order.place_order()
             order.save()
+            send_order_confirmation(self.request.user.first_name, self.request.user.email, order)
             if order.placed:
                 order = OrderSerializer(order).data
                 return Response({'charge': response, 'order': order})
