@@ -59,7 +59,10 @@ class GetCart(RetrieveAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_object(self):
-        order = Order.objects.get(user=self.request.user, placed=False)
+        order = Order.objects.filter(user=self.request.user, placed=False).first()
+        if not order:
+            order = Order(user=self.request.user, placed=False)
+            order.save()
         return order
 
 
