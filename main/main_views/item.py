@@ -4,10 +4,10 @@ from django.db.models import Q
 from rest_framework import generics
 from rest_framework import mixins
 
-from main.main_models.item import Option
+#from main.models import Option
 from main.models import Item
 from main.paginators import CustomPageNumberPagination
-from main.serializers import ItemSerializer, OptionSerializer, ItemDetailSerializer
+from main.serializers import ItemSerializer, ItemDetailSerializer #, OptionSerializer
 
 
 class ItemDetail(generics.RetrieveAPIView):
@@ -15,9 +15,9 @@ class ItemDetail(generics.RetrieveAPIView):
     serializer_class = ItemDetailSerializer
 
 
-class OptionList(generics.ListAPIView):
-    queryset = Option.objects.all()
-    serializer_class = OptionSerializer
+# class OptionList(generics.ListAPIView):
+#     queryset = Option.objects.all()
+#     serializer_class = OptionSerializer
 
 
 class ItemList(mixins.ListModelMixin, mixins.CreateModelMixin, generics.GenericAPIView):
@@ -36,9 +36,6 @@ class ItemSearch(generics.ListAPIView):
     serializer_class = ItemSerializer
 
     def get_queryset(self):
-        # Probably poorly performing algorithms ahead. May need performance review.
-        # This was built purely for my own educational purposes and will probably be replaced with elastic search.
-
         search_terms = self.request.GET.getlist('search', None)
 
         if not search_terms:
@@ -60,8 +57,6 @@ class ItemSearch(generics.ListAPIView):
         results_split = [list(set(item.name.lower().split() + item.description.lower().split() + list((index,))))
                          for index, item in enumerate(results)]
 
-        item = Item()
-        # <magic>
         # Builds weight for each term
         # Example: The search has 3 terms, Red, Shoes, Pants
         # Red would have a weight of 3 since it is the first word, shoes would be 2 and pants would be 1
@@ -79,11 +74,9 @@ class ItemSearch(generics.ListAPIView):
         get_weight = lambda x: ([weight for y, weight in query_with_weights if y == x] or [0])[0]
         sorted_results = sorted([(item, sum([(get_weight(term)) for term in item])) for item in results_split],
                                 key=lambda lst: lst[1], reverse=True)
-        # </magic>
 
         # Using the index stored from before I am able to access the original results list in order and
         #  create a new list that is now sorted based on the weight of each item in the search.
-        # I am planning to expand this purely for educational purposes to include tags in the weighing and filtering process.
         all_results = [results[result[0][result[0].index(term)]] for result in sorted_results for term in result[0] if
                         type(term) is int]
 

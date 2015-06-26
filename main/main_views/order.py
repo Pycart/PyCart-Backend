@@ -7,11 +7,14 @@ from rest_framework.generics import ListAPIView, UpdateAPIView, RetrieveAPIView
 from rest_framework.response import Response
 
 
-from main.main_models.order import Order
-from main.serializers import OrderSerializer, AddToOrderSerializer
+from main.models import Order
+from main.serializers import OrderSerializer, ItemOrderUpdateSerializer
 
 
 class OrdersView(ListAPIView):
+    """
+    Returns a list of all this users orders.
+    """
     serializer_class = OrderSerializer
     authentication_classes = (authentication.TokenAuthentication, )
     if settings.DEBUG:
@@ -25,6 +28,9 @@ class OrdersView(ListAPIView):
 
 
 class RecentOrdersView(ListAPIView):
+    """
+    Returns a list of all this users recent orders. By default its 30 days.
+    """
     serializer_class = OrderSerializer
     authentication_classes = (authentication.TokenAuthentication,)
     if settings.DEBUG:
@@ -53,37 +59,88 @@ class GetCart(RetrieveAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def get_object(self):
-        order = Order.objects.get(user=self.request.user, placed=False)
+        order = Order.objects.filter(user=self.request.user, placed=False).first()
+        if not order:
+            order = Order(user=self.request.user, placed=False)
+            order.save()
         return order
 
 
-class AddItemToOrderView(UpdateAPIView):
+class UpdateCart(UpdateAPIView):
     """
     This view takes in two lists, 'items' and 'quantity'. The items list is a set of item ID's that the user would
-    like to add to an order. Then in the quantities list the amount of each item that user would like. A quantity of 0
-    would remove the item from the cart, if it exists already. Other wise, it would be ignored.
+    like to add to an order. The quantities list is the amount of each item.
+
+    The use of the increment flag would determine if you are adding that many to existing item on an order.
+    If the increment flag is set to false, it will set that order quantity to that exact amount.
+    If the increment flag is set to True, negative quantities are no longer ignored and will
+    subtract from the total items. If at that point the total for that item is less than 0 it will be removed.
+
+    By default increment is True. To remove items you must explicitly set increment to False and set an items
+    quantity to 0.
 
     For example:
+
+    An order is in progress and it has these items already on it:
+
+    Item 1, quantity 8.
+    Item 2, quantity 2.
+    Item 7, quantity 5.
+    Item 8, quantity 5.
+
+    A request to update the cart with an Increment True was made:
     {
-        Items: [1, 3, 6, 7]
-        Quantity: [3, 0, 1, 1]
+        Items: [1, 6, 7, 8],
+        Quantity: [3, 5, -3, 0],
+        Increment: True
     }
 
-    The input above would add the Item with index of 1 with a quantity of 3 to the cart,
-     it would delete the Item with an ID of 3 from the cart, add the Item with the ID of 6 to the cart with a
-     quantity of 1 and finally would add the Item with the ID of 7 to the cart with a quantity of 1 as well.
+    Afterwards, the items on the order look like this:
+
+    Item 1, quantity 11.
+    Item 2, quantity 2.
+    Item 6 was created with a quantity of 5.
+    Item 7, quantity 2.
+    Item 8, quantity 5.
+
+
+    Example 2:
+
+    An order is in progress and it has these items already on it:
+
+    Item 1, quantity 8.
+    Item 2, quantity 2.
+    Item 7, quantity 5.
+    Item 8, quantity 5.
+
+    A request to update the cart with a increment of False is made.
+
+    {
+        Items:    [1, 6, 7, 8],
+        Quantity: [3, 1, 0, -2],
+        Increment: False
+    }
+
+    Afterwards, the items on the order look like this:
+
+    Item 1, quantity 3.
+    Item 2, quantity 2.
+    Item 6 was created with a quantity of 1.
+    Item 7 was removed.
+    Item 8, quantity 5.
     """
-    serializer_class = AddToOrderSerializer
+    serializer_class = ItemOrderUpdateSerializer
     authentication_classes = (authentication.TokenAuthentication, )
     if settings.DEBUG:
         authentication_classes = (authentication.TokenAuthentication, authentication.SessionAuthentication)
     permission_classes = (permissions.IsAuthenticated,)
 
     def put(self, request, *args, **kwargs):
-        serializer = AddToOrderSerializer(data=self.request.data)
+        print request.DATA
+        serializer = ItemOrderUpdateSerializer(data=self.request.data)
         if serializer.is_valid():
             serializer.update(self.get_object(), serializer.validated_data)
-            return Response('Item Added', status=status.HTTP_202_ACCEPTED)
+            return Response('Items Updated', status=status.HTTP_202_ACCEPTED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

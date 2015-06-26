@@ -1,7 +1,5 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-
-from main_models.user import ShopUser
-
+from main.models import ShopUser
 
 class CustomUserCreationForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
@@ -20,3 +18,4 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta:
         model = ShopUser
+

@@ -1,5 +1,5 @@
 from rest_framework import generics, permissions
-from main.main_models.user import ShopUser
+from main.models import ShopUser
 from main.serializers import ShopUserSerializer
 
 class UserView(generics.RetrieveUpdateAPIView):

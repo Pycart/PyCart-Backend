@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class Address(models.Model):
+class AbstractAddress(models.Model):
     options = {
         "Billing": "Billing",
         "Shipping": "Shipping"
@@ -13,7 +13,8 @@ class Address(models.Model):
     city = models.CharField(max_length=30)
     state = models.CharField(max_length=10)
     zip = models.CharField(max_length=10)
-    user = models.ForeignKey("ShopUser")
+    user = models.ForeignKey("main.ShopUser")
 
     def __unicode__(self):
         return self.name
+

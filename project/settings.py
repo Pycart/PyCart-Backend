@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 's!%a!q&7!ua*kux)zu-pe912rlrj9vxz@6g$oc+p7nxgvo4b2m'
+STRIPE_API_KEY = "sk_test_BQokikJOvBiI2HlWgH4olfQ2"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -46,6 +47,7 @@ INSTALLED_APPS = (
     'mptt',
     'taggit_serializer',
     'djoser',
+    'django_extensions',
 )
 
 
@@ -81,22 +83,33 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'project.wsgi.application'
 
-AUTH_USER_MODEL = 'auth.User'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'pycart',                      # Or path to database file if using sqlite3.
+        # The following settings are not used with sqlite3:
+        'USER': 'root',
+        'PASSWORD': 'root',
+        'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
+        'PORT': '',                      # Set to empty string for default.
     }
 }
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
+
+
 
 AUTH_USER_MODEL = 'main.ShopUser'
 
@@ -139,5 +152,6 @@ MEDIA_ROOT = BASE_DIR + '/main/media/'
 
 MEDIA_URL = '/media/'
 
+EMAIL_HOST_USER = 'test@test.com'
 
 

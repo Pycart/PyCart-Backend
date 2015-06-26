@@ -17,8 +17,8 @@ def create_modeladmin(modeladmin, model, name=None):
     return modeladmin
 
 
-class OptionInline(admin.TabularInline):
-    model = Option
+# class OptionInline(admin.TabularInline):
+#     model = Option
 
 
 class ItemAdmin(admin.ModelAdmin):
@@ -47,9 +47,9 @@ admin.site.register(ShopUser)
 admin.site.register(Item, ItemAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(Status)
-admin.site.register(Shop_Item_Tag, Shop_Item_TagAdmin)
-admin.site.register(Shop_Tagged_Item)
-admin.site.register(Option)
+admin.site.register(ShopItemTag, Shop_Item_TagAdmin)
+admin.site.register(ShopTaggedItem)
+#admin.site.register(Option)
 admin.site.register(SaveCard)
 admin.site.register(Address)
 admin.site.register(StockRecord)

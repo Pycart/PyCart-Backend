@@ -1,3 +1,5 @@
+from rest_framework.views import APIView
+
 class AddOrRemoveItem(APIView):
     """
     Retrieve, update or delete a snippet instance.

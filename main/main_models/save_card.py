@@ -1,7 +1,7 @@
 from django.db import models
 
 
-class SaveCard(models.Model):
+class AbstractSaveCard(models.Model):
     name = models.CharField(max_length=30)
     #Stripe reference
     ref = models.CharField(max_length=255)
@@ -9,5 +9,3 @@ class SaveCard(models.Model):
 
     def __unicode__(self):
         return self.name
-
-

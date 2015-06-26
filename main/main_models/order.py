@@ -3,34 +3,44 @@ from decimal import Decimal
 
 from django.db import models
 from django.utils import timezone
+from main.main_models.user import AbstractShopUser
+from main.models import *
 
 
-class Status(models.Model):
-    status = models.CharField(max_length=255)
+class AbstractStatus(models.Model):
+    _default = models.BooleanField(default=False)
+    abs_status = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
+
+    @property
+    def default(self):
+        return self._default
+
+    @default.setter
+    def default(self, value):
+        if value:
+            current_default = AbstractStatus.objects.get(_default=True)
+            current_default._default = False
+            current_default.save()
+            self._default = True
+            self.save()
 
     class Meta:
         verbose_name = 'Order Status'
         verbose_name_plural = 'Order Statuses'
 
     def __unicode__(self):
-        return self.status
+        return self.abs_status
 
 
-class OrderItem(models.Model):
-    order = models.ForeignKey('main.Order')
-    item = models.ForeignKey('main.Item')
-    quantity = models.IntegerField(default=1)
-
-
-class Order(models.Model):
-    _current_status = models.ForeignKey("main.Status", blank=True, null=True)
+class AbstractOrder(models.Model):
+    _current_status = models.ForeignKey(AbstractStatus, blank=True, null=True)
     _last_modified = models.DateTimeField(auto_now=True)
     _weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     _total_price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
 
-    user = models.ForeignKey("main.ShopUser")
-    items = models.ManyToManyField("main.Item", through='main.OrderItem')
+    user = models.ForeignKey(AbstractShopUser)
+    items = models.ManyToManyField('main.Item', through='main.OrderItem')
     placed = models.BooleanField(default=False)
     date_placed = models.DateTimeField(null=True, blank=True)
 
@@ -42,7 +52,7 @@ class Order(models.Model):
 
     def set_weight(self):
         total = Decimal()
-        for order_item in self.orderitem_set.all():
+        for order_item in self.abstractorderitem_set.all():
             weight = order_item.item.weight
             quantity = order_item.quantity
             total += weight * quantity
@@ -50,14 +60,16 @@ class Order(models.Model):
 
     def set_total_price(self):
         total = Decimal()
-        for order_item in self.orderitem_set.all():
+        for order_item in self.abstractorderitem_set.all():
             price = order_item.item.price
             quantity = order_item.quantity
             total += price * quantity
         self._total_price = total
 
     def place_order(self):
-        raise NotImplementedError("Needs to be implemented")
+        self.current_status = AbstractStatus.objects.get(_default=True)
+        self.placed = True
+        self.date_placed = timezone.now()
 
     def recently_placed(self):
         # TODO: Make configurable amount of time order stays "recent", probably in settings.py or as a user attribute
@@ -72,26 +84,26 @@ class Order(models.Model):
 
     @staticmethod
     def average_order_price():
-        orders = Order.objects.filter(placed=True).count()
+        orders = AbstractOrder.objects.filter(placed=True).count()
         total_cost = sum([order.total_price for order in orders])
         average_order_price = total_cost / orders
         return average_order_price
 
     @staticmethod
     def incomplete_order_count():
-        orders = Order.objects.filter(placed=False).count()
+        orders = AbstractOrder.objects.filter(placed=False).count()
         return orders
 
     @staticmethod
     def average_order_price():
-        orders = Order.objects.filter(placed=True).count()
+        orders = AbstractOrder.objects.filter(placed=True).count()
         total_cost = sum([order.total_price for order in orders])
         average_order_price = total_cost / orders
         return average_order_price
 
     @staticmethod
     def incomplete_order_count():
-        orders = Order.objects.filter(placed=False).count()
+        orders = AbstractOrder.objects.filter(placed=False).count()
         return orders
 
     @property
@@ -128,3 +140,9 @@ class Order(models.Model):
     @total_price.setter
     def total_price(self, value):
         raise AttributeError("You cannot set the total price directly. It is calculated via all the items prices.")
+
+
+class AbstractOrderItem(models.Model):
+    order = models.ForeignKey(AbstractOrder)
+    item = models.ForeignKey('main.Item')
+    quantity = models.IntegerField(default=1)

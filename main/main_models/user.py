@@ -4,8 +4,9 @@ from django.utils.http import urlquote
 from django.core.mail import send_mail
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 
+
 # This is basically creating a custom UserManager
-class CustomUserManager(BaseUserManager):
+class AbstractCustomUserManager(BaseUserManager):
     def _create_user(self, email, password, is_staff, is_superuser, **extra_fields):
         now = timezone.now()
         if not email:
@@ -30,14 +31,14 @@ class CustomUserManager(BaseUserManager):
         return self._create_user(email, password, True, True, **extra_fields)
 
 
-class ShopUser(AbstractBaseUser, PermissionsMixin):
+class AbstractShopUser(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField('email address', max_length=255, unique=True)
     first_name = models.CharField('first name', max_length=30, blank=True, null=True)
     last_name = models.CharField('last name', max_length=30, blank=True, null=True)
     is_staff = models.BooleanField('staff status', default=False)
     is_active = models.BooleanField('active', default=True)
     date_joined = models.DateTimeField('date joined', auto_now_add=True)
-    objects = CustomUserManager()
+    objects = AbstractCustomUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
